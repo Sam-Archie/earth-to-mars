@@ -17,6 +17,17 @@ public class ApiTests(WebApplicationFactory<Program> api) : IClassFixture<WebApp
         Assert.Equal("1 1 E\n3 3 N LOST\n2 3 S\n", await response.Content.ReadAsStringAsync());
     }
 
+    [Fact]
+    public async Task A_scent_left_in_one_request_does_not_protect_a_robot_in_the_next()
+    {
+        const string robotLostOffTheNorthEdge = "5 3\n3 2 N\nFF\n";
+
+        await PostMission(robotLostOffTheNorthEdge);
+        var response = await PostMission(robotLostOffTheNorthEdge);
+
+        Assert.Equal("3 3 N LOST\n", await response.Content.ReadAsStringAsync());
+    }
+
     private Task<HttpResponseMessage> PostMission(string missionText) =>
         api.CreateClient().PostAsync("/missions", new StringContent(missionText));
 }
