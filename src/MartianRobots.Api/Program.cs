@@ -9,7 +9,7 @@ app.MapPost("/missions", async (HttpRequest request) =>
     var missionText = await new StreamReader(request.Body).ReadToEndAsync();
     var earthLines = missionText.Split('\n').Where(line => !string.IsNullOrWhiteSpace(line)).ToArray();
 
-    var marsRead = LineReaders.ReadMars(earthLines[0]);
+    var marsRead = LineReaders.ReadMars(earthLines.FirstOrDefault() ?? "");
     if (marsRead.Value is not { } mars)
     {
         return Results.Text(marsRead.Hint, statusCode: StatusCodes.Status400BadRequest);
