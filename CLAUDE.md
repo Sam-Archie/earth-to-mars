@@ -38,7 +38,7 @@ The commit history is reviewed.
 
 - Small commits: one behaviour or one decision each.
 - Messages are clear and easy to read, in the imperative ("Ignore forward move off a scented edge").
-- `dotnet test` passes on every commit.
+- `dotnet test` and `dotnet format MartianRobots.slnx --verify-no-changes` pass on every commit; a hook in `.claude/settings.json` blocks a commit that fails either.
 - AI-assisted commits keep the `Co-Authored-By: Claude` trailer.
 
 ## Process
