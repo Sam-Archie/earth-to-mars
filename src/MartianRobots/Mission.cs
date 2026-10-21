@@ -17,10 +17,10 @@ public sealed class Mission(Mars mars)
             else if (!_scents.Contains(position.Square))
             {
                 _scents.Add(position.Square);
-                return new RobotReport($"{position} LOST", Lost: true);
+                return new RobotReport(position, Lost: true);
             }
         }
 
-        return new RobotReport(position.ToString(), Lost: false);
+        return new RobotReport(position, Lost: false);
     }
 }
