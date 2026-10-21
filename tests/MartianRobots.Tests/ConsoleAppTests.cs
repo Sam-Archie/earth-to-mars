@@ -136,7 +136,7 @@ public partial class ConsoleAppTests
     // The running app holds the log open, so read it without asking for sole access.
     private static string ReadMissionLogWhileOpen(DirectoryInfo workingDirectory)
     {
-        var missionLogPath = Path.Combine(workingDirectory.FullName, "logs", "missions.txt");
+        var missionLogPath = MissionLogPath(workingDirectory);
         if (!File.Exists(missionLogPath))
         {
             return "";
@@ -153,7 +153,10 @@ public partial class ConsoleAppTests
     private static partial Regex EntryTime();
 
     private static string[] ReadMissionLogLines(DirectoryInfo workingDirectory) =>
-        File.ReadAllLines(Path.Combine(workingDirectory.FullName, "logs", "missions.txt"));
+        File.ReadAllLines(MissionLogPath(workingDirectory));
+
+    private static string MissionLogPath(DirectoryInfo workingDirectory) =>
+        Path.Combine(workingDirectory.FullName, "logs", "missions.txt");
 
     // The latest mission's lines follow its header. Each must start with its time; the entry is what follows it.
     private static string[] ReadMissionLogEntries(DirectoryInfo workingDirectory)
