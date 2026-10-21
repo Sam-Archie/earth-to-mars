@@ -195,4 +195,19 @@ public class MissionTests
         Assert.Equal(ClaimOutcome.AlreadyClaimed, fifth.Claim);
         Assert.False(fifth.CompletedMission);
     }
+
+    [Fact]
+    public void Scents_and_claims_last_for_one_mission_only()
+    {
+        var firstMission = StartMission("5 3");
+        firstMission.Send("2 3 N", "F");
+        firstMission.Send("1 1 E", "");
+
+        var nextMission = StartMission("5 3");
+        var lostAgain = nextMission.Send("2 3 N", "F");
+        var claimedAgain = nextMission.Send("1 1 E", "");
+
+        Assert.Equal("2 3 N LOST", lostAgain.ResultLine);
+        Assert.Equal(ClaimOutcome.Claimed, claimedAgain.Claim);
+    }
 }
