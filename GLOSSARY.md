@@ -23,3 +23,11 @@ _Avoid_: Park, stake, mark
 **Claimed square**:
 A square that holds a claim. Other robots may pass through or finish on it, but cannot claim it again.
 _Avoid_: Parked, occupied, taken
+
+**Command**:
+One letter's action on a robot: turn left (`L`), turn right (`R`) or move forward (`F`). New command types may be added later.
+_Avoid_: Instruction (for a single letter), move, action
+
+**Instructions**:
+The line of commands Earth sends to one robot, carried out in order.
+_Avoid_: Command string, program, moves
