@@ -165,4 +165,13 @@ public class MissionTests
         Assert.Equal("3 1 E", second.ResultLine);
         Assert.Equal(ClaimOutcome.Claimed, second.Claim);
     }
+
+    [Fact]
+    public void Robot_sent_no_instructions_claims_its_starting_square()
+    {
+        var report = StartMission("5 3").Send("1 1 E", "");
+
+        Assert.Equal("1 1 E", report.ResultLine);
+        Assert.Equal(ClaimOutcome.Claimed, report.Claim);
+    }
 }
