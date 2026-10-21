@@ -3,7 +3,7 @@ using MartianRobots.Missions;
 namespace MartianRobots.Cli;
 
 /// <summary>One mission run over the console: asks Earth for Mars and each robot, then reports every robot as it finishes.</summary>
-public static class ConsoleMission
+public static class MissionControl
 {
     public static void Start()
     {

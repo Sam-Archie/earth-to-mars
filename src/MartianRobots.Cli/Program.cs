@@ -1,3 +1,3 @@
 using MartianRobots.Cli;
 
-ConsoleMission.Start();
+MissionControl.Start();
