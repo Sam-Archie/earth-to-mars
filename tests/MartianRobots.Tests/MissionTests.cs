@@ -221,7 +221,7 @@ public class MissionTests
     }
 
     [Fact]
-    public void Map_after_the_brief_sample_shows_each_claim_by_robot_number_the_scent_and_unknown_regions()
+    public void Map_after_the_brief_sample_shows_each_claim_by_robot_number_and_the_scent_and_leaves_other_squares_blank()
     {
         var mission = StartMission("5 3");
         mission.Send("1 1 E", "RFRFRFRF");
@@ -231,10 +231,10 @@ public class MissionTests
         Assert.Equal("""
               N
               ^   ~ Earth's view of Mars ~
-            3 ? ? 3 * ? ?
-            2 ? ? ? ? ? ?
-            1 ? 1 ? ? ? ?
-            0 ? ? ? ? ? ?
+            3     3 *
+            2
+            1   1
+            0
               0 1 2 3 4 5
             """, mission.RenderMap());
     }
@@ -249,8 +249,8 @@ public class MissionTests
         Assert.Equal("""
               N
               ^   ~ Earth's view of Mars ~
-            1 ? 2 ?
-            0 ? ? ?
+            1   2
+            0
               0 1 2
             """, mission.RenderMap());
     }
@@ -270,7 +270,7 @@ public class MissionTests
         Assert.Equal("""
                N
                ^   ~ Earth's view of Mars ~
-            0  2  ? 10  ?
+            0  2    10
                0  1  2  3
             """, mission.RenderMap());
     }
@@ -284,7 +284,7 @@ public class MissionTests
         Assert.Equal("""
                N
                ^   ~ Earth's view of Mars ~
-            0  1  ?  ?  ?  ?  ?  ?  ?  ?  ?  ?
+            0  1
                0  1  2  3  4  5  6  7  8  9 10
             """, mission.RenderMap());
     }
@@ -298,16 +298,16 @@ public class MissionTests
         Assert.Equal("""
                N
                ^   ~ Earth's view of Mars ~
-            10 ?
-             9 ?
-             8 ?
-             7 ?
-             6 ?
-             5 ?
-             4 ?
-             3 ?
-             2 ?
-             1 ?
+            10
+             9
+             8
+             7
+             6
+             5
+             4
+             3
+             2
+             1
              0 1
                0
             """, mission.RenderMap());

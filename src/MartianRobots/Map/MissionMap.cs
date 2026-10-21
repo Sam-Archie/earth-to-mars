@@ -6,7 +6,8 @@ namespace MartianRobots.Map;
 /// <summary>Draws Earth's picture of a planet as ASCII text, north at the top and `0 0` at the bottom left.</summary>
 internal static class MissionMap
 {
-    private const string UnknownRegion = "?";
+    // Earth knows nothing about an unknown region, so the map leaves it blank and only claims and scents stand out.
+    private const string UnknownRegion = " ";
     private const string Scent = "*";
 
     public static string Render(IPlanet planet, IReadOnlyDictionary<Square, int> claimingRobotNumbers, IReadOnlySet<Square> scents)
@@ -18,7 +19,7 @@ internal static class MissionMap
         var xFromWestToEast = Enumerable.Range(0, planet.UpperRight.X + 1).ToList();
 
         string MapLine(string yLabel, IEnumerable<string> symbols) =>
-            $"{yLabel.PadLeft(yLabelWidth)} {string.Join(' ', symbols.Select(symbol => symbol.PadLeft(symbolWidth)))}";
+            $"{yLabel.PadLeft(yLabelWidth)} {string.Join(' ', symbols.Select(symbol => symbol.PadLeft(symbolWidth)))}".TrimEnd();
 
         var mapLines = new List<string> { MapLine("", ["N"]), MapLine("", ["^"]) + "   ~ Earth's view of Mars ~" };
         for (var squareY = planet.UpperRight.Y; squareY >= 0; squareY--)

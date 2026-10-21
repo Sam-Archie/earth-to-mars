@@ -53,15 +53,15 @@ The console app is the main deliverable. Earth types or pipes in the brief's inp
 On top of the brief, the console app adds a few things that change no rule and never touch stdout:
 
 - **Claims.** A robot that finishes its instructions on Mars claims its square for Earth. Each square can be claimed once. When the last unclaimed square is claimed, stderr announces **Mission complete**.
-- **The mission map.** After every robot, stderr shows Earth's view of Mars: `?` for an unknown region (a square no robot has claimed), the claiming robot's number on a claimed square, and `*` for a scent. After the brief's sample:
+- **The mission map.** After every robot, stderr shows Earth's view of Mars: the claiming robot's number on a claimed square and `*` for a scent. Every other square is an unknown region (one Earth knows nothing about) and is left blank, so only what Earth knows shows up. After the brief's sample:
 
   ```
     N
     ^   ~ Earth's view of Mars ~
-  3 ? ? 3 * ? ?
-  2 ? ? ? ? ? ?
-  1 ? 1 ? ? ? ?
-  0 ? ? ? ? ? ?
+  3     3 *
+  2
+  1   1
+  0
     0 1 2 3 4 5
   ```
 

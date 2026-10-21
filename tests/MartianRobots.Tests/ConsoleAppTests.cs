@@ -55,7 +55,7 @@ public partial class ConsoleAppTests
 
         var mapsWritten = run.Stderr.Split("~ Earth's view of Mars ~").Length - 1;
         Assert.Equal(3, mapsWritten);
-        Assert.Contains("3 ? ? 3 * ? ?", run.Stderr);
+        Assert.Contains("3     3 *\n", run.Stderr.ReplaceLineEndings("\n"));
     }
 
     [Fact]
