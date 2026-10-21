@@ -62,4 +62,28 @@ public class MissionTests
         Assert.Equal("3 3 N LOST", report.ResultLine);
         Assert.True(report.Lost);
     }
+
+    [Fact]
+    public void Robot_starting_on_a_scented_square_ignores_a_move_off_Mars()
+    {
+        var mission = StartMission("5 3");
+        Send(mission, "2 3 N", "F");
+
+        var report = Send(mission, "2 3 N", "F");
+
+        Assert.Equal("2 3 N", report.ResultLine);
+        Assert.False(report.Lost);
+    }
+
+    [Fact]
+    public void Scent_on_a_corner_stops_a_move_off_Mars_over_either_edge()
+    {
+        var mission = StartMission("5 3");
+
+        var first = Send(mission, "5 3 N", "F");
+        var second = Send(mission, "5 3 E", "F");
+
+        Assert.Equal("5 3 N LOST", first.ResultLine);
+        Assert.Equal("5 3 E", second.ResultLine);
+    }
 }
