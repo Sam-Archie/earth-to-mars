@@ -41,4 +41,16 @@ public class MissionTests
 
         Assert.Equal(expected, report.ResultLine);
     }
+
+    [Theory]
+    [InlineData("2 2 N", "2 3 N")]
+    [InlineData("2 2 E", "3 2 E")]
+    [InlineData("2 2 S", "2 1 S")]
+    [InlineData("2 2 W", "1 2 W")]
+    public void Forward_moves_a_robot_one_square_the_way_it_faces(string start, string expected)
+    {
+        var report = Send(StartMission("5 3"), start, "F");
+
+        Assert.Equal(expected, report.ResultLine);
+    }
 }

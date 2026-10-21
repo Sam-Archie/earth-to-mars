@@ -6,5 +6,6 @@ internal static class Commands
     {
         ['L'] = new TurnLeft(),
         ['R'] = new TurnRight(),
+        ['F'] = new MoveForward(),
     };
 }
