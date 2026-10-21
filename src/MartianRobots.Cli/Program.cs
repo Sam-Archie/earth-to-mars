@@ -1,5 +1,7 @@
 using MartianRobots;
+using MartianRobots.Cli;
 
+using var missionLogger = new MissionFileLogger();
 var mars = AskUntilRead("Earth to Mars, come in. How big is Mars? Send its upper-right square, like `5 3`.", LineReaders.ReadMars);
 if (mars is null)
 {

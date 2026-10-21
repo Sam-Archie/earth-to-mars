@@ -1,8 +1,9 @@
 using System.Diagnostics;
+using System.Text.RegularExpressions;
 
 namespace MartianRobots.Tests;
 
-public class ConsoleAppTests
+public partial class ConsoleAppTests
 {
     [Fact]
     public async Task Piping_the_brief_sample_writes_exactly_the_brief_result_lines_to_stdout()
@@ -57,6 +58,32 @@ public class ConsoleAppTests
         Assert.Contains("3 ? ? 3 * ? ?", run.Stderr);
     }
 
+    [Fact]
+    public async Task Each_mission_appends_a_started_header_to_the_mission_log()
+    {
+        var workingDirectory = Directory.CreateTempSubdirectory();
+        try
+        {
+            await RunConsoleAppIn(workingDirectory, "5 3\n");
+            await RunConsoleAppIn(workingDirectory, "5 3\n");
+
+            var missionLogLines = ReadMissionLogLines(workingDirectory);
+            var missionHeaders = missionLogLines.Where(line => MissionHeader().IsMatch(line));
+            Assert.Equal(2, missionHeaders.Count());
+            Assert.Matches(MissionHeader(), missionLogLines[0]);
+        }
+        finally
+        {
+            workingDirectory.Delete(recursive: true);
+        }
+    }
+
+    [GeneratedRegex(@"^--- Mission started \d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2} ---$")]
+    private static partial Regex MissionHeader();
+
+    private static string[] ReadMissionLogLines(DirectoryInfo workingDirectory) =>
+        File.ReadAllLines(Path.Combine(workingDirectory.FullName, "logs", "missions.txt"));
+
     private sealed record ConsoleRun(string Stdout, string Stderr, int ExitCode);
 
     private static async Task<ConsoleRun> RunConsoleApp(string stdin)
@@ -64,24 +91,34 @@ public class ConsoleAppTests
         var workingDirectory = Directory.CreateTempSubdirectory();
         try
         {
-            var startInfo = new ProcessStartInfo("dotnet", [Path.Combine(AppContext.BaseDirectory, "MartianRobots.Cli.dll")])
-            {
-                RedirectStandardInput = true,
-                RedirectStandardOutput = true,
-                RedirectStandardError = true,
-                WorkingDirectory = workingDirectory.FullName,
-            };
-            using var process = Process.Start(startInfo)!;
-            var stdout = process.StandardOutput.ReadToEndAsync();
-            var stderr = process.StandardError.ReadToEndAsync();
-            await process.StandardInput.WriteAsync(stdin);
-            process.StandardInput.Close();
-            await process.WaitForExitAsync();
-            return new ConsoleRun((await stdout).ReplaceLineEndings("\n"), await stderr, process.ExitCode);
+            return await RunConsoleAppIn(workingDirectory, stdin);
         }
         finally
         {
             workingDirectory.Delete(recursive: true);
         }
+    }
+
+    private static async Task<ConsoleRun> RunConsoleAppIn(DirectoryInfo workingDirectory, string stdin)
+    {
+        using var process = StartConsoleAppIn(workingDirectory);
+        var stdout = process.StandardOutput.ReadToEndAsync();
+        var stderr = process.StandardError.ReadToEndAsync();
+        await process.StandardInput.WriteAsync(stdin);
+        process.StandardInput.Close();
+        await process.WaitForExitAsync();
+        return new ConsoleRun((await stdout).ReplaceLineEndings("\n"), await stderr, process.ExitCode);
+    }
+
+    private static Process StartConsoleAppIn(DirectoryInfo workingDirectory)
+    {
+        var startInfo = new ProcessStartInfo("dotnet", [Path.Combine(AppContext.BaseDirectory, "MartianRobots.Cli.dll")])
+        {
+            RedirectStandardInput = true,
+            RedirectStandardOutput = true,
+            RedirectStandardError = true,
+            WorkingDirectory = workingDirectory.FullName,
+        };
+        return Process.Start(startInfo)!;
     }
 }
