@@ -186,9 +186,8 @@ public class MissionTests
         var fourth = mission.Send("1 0 N", "");
         var fifth = mission.Send("0 0 E", "F");
 
-        Assert.False(first.CompletedMission);
-        Assert.False(second.CompletedMission);
-        Assert.False(third.CompletedMission);
+        Assert.All([first, second, third], report => Assert.Equal(ClaimOutcome.Claimed, report.Claim));
+        Assert.All([first, second, third], report => Assert.False(report.CompletedMission));
         Assert.Equal(ClaimOutcome.Claimed, fourth.Claim);
         Assert.True(fourth.CompletedMission);
         Assert.Equal("1 0 E", fifth.ResultLine);
