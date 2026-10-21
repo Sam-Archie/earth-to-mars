@@ -174,4 +174,25 @@ public class MissionTests
         Assert.Equal("1 1 E", report.ResultLine);
         Assert.Equal(ClaimOutcome.Claimed, report.Claim);
     }
+
+    [Fact]
+    public void Robot_claiming_the_last_unclaimed_square_completes_the_mission_and_later_robots_still_run()
+    {
+        var mission = StartMission("1 1");
+
+        var first = mission.Send("0 0 N", "");
+        var second = mission.Send("0 1 N", "");
+        var third = mission.Send("1 1 N", "");
+        var fourth = mission.Send("1 0 N", "");
+        var fifth = mission.Send("0 0 E", "F");
+
+        Assert.False(first.CompletedMission);
+        Assert.False(second.CompletedMission);
+        Assert.False(third.CompletedMission);
+        Assert.Equal(ClaimOutcome.Claimed, fourth.Claim);
+        Assert.True(fourth.CompletedMission);
+        Assert.Equal("1 0 E", fifth.ResultLine);
+        Assert.Equal(ClaimOutcome.AlreadyClaimed, fifth.Claim);
+        Assert.False(fifth.CompletedMission);
+    }
 }

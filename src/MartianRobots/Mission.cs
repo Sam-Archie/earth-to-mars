@@ -18,11 +18,16 @@ public sealed class Mission(Mars mars)
             else if (!_scents.Contains(position.Square))
             {
                 _scents.Add(position.Square);
-                return new RobotReport(position, Lost: true, ClaimOutcome.None);
+                return new RobotReport(position, Lost: true, ClaimOutcome.None, CompletedMission: false);
             }
         }
 
-        var claim = _claims.Add(position.Square) ? ClaimOutcome.Claimed : ClaimOutcome.AlreadyClaimed;
-        return new RobotReport(position, Lost: false, claim);
+        if (!_claims.Add(position.Square))
+        {
+            return new RobotReport(position, Lost: false, ClaimOutcome.AlreadyClaimed, CompletedMission: false);
+        }
+
+        var marsIsFullyClaimed = _claims.Count == mars.SquareCount;
+        return new RobotReport(position, Lost: false, ClaimOutcome.Claimed, marsIsFullyClaimed);
     }
 }
