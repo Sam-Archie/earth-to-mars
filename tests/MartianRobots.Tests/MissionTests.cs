@@ -132,4 +132,13 @@ public class MissionTests
         Assert.Equal("2 1 E", report.ResultLine);
         Assert.Equal(ClaimOutcome.Claimed, report.Claim);
     }
+
+    [Fact]
+    public void Lost_robot_claims_nothing()
+    {
+        var report = StartMission("5 3").Send("3 2 N", "FF");
+
+        Assert.Equal("3 3 N LOST", report.ResultLine);
+        Assert.Equal(ClaimOutcome.None, report.Claim);
+    }
 }
