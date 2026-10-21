@@ -3,10 +3,12 @@ namespace MartianRobots;
 public sealed class Mission(Mars mars)
 {
     private readonly HashSet<Square> _scents = [];
-    private readonly HashSet<Square> _claims = [];
+    private readonly Dictionary<Square, int> _claimingRobotNumbers = [];
+    private int _robotsSent;
 
     public RobotReport Send(Position start, Instructions instructions)
     {
+        var robotNumber = ++_robotsSent;
         var position = start;
         foreach (var command in instructions.Commands)
         {
@@ -22,12 +24,14 @@ public sealed class Mission(Mars mars)
             }
         }
 
-        if (!_claims.Add(position.Square))
+        if (!_claimingRobotNumbers.TryAdd(position.Square, robotNumber))
         {
             return new RobotReport(position, Lost: false, ClaimOutcome.AlreadyClaimed, CompletedMission: false);
         }
 
-        var marsIsFullyClaimed = _claims.Count == mars.SquareCount;
+        var marsIsFullyClaimed = _claimingRobotNumbers.Count == mars.SquareCount;
         return new RobotReport(position, Lost: false, ClaimOutcome.Claimed, marsIsFullyClaimed);
     }
+
+    public string RenderMap() => MissionMap.Render(mars, _claimingRobotNumbers, _scents);
 }

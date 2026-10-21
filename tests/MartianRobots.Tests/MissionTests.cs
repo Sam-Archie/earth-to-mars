@@ -11,6 +11,8 @@ public class MissionTests
 
         public RobotReport Send(string positionLine, string instructionsLine) =>
             _mission.Send(LineReaders.ReadPosition(positionLine, mars).Value!, LineReaders.ReadInstructions(instructionsLine).Value!);
+
+        public string RenderMap() => _mission.RenderMap();
     }
 
     [Fact]
@@ -196,6 +198,25 @@ public class MissionTests
         Assert.Equal("1 0 E", fifth.ResultLine);
         Assert.Equal(ClaimOutcome.AlreadyClaimed, fifth.Claim);
         Assert.False(fifth.CompletedMission);
+    }
+
+    [Fact]
+    public void Map_after_the_brief_sample_shows_each_claim_by_robot_number_the_scent_and_unknown_regions()
+    {
+        var mission = StartMission("5 3");
+        mission.Send("1 1 E", "RFRFRFRF");
+        mission.Send("3 2 N", "FRRFLLFFRRFLL");
+        mission.Send("0 3 W", "LLFFFLFLFL");
+
+        Assert.Equal("""
+              N
+              ^   ~ Earth's view of Mars ~
+            3 ? ? 3 * ? ?
+            2 ? ? ? ? ? ?
+            1 ? 1 ? ? ? ?
+            0 ? ? ? ? ? ?
+              0 1 2 3 4 5
+            """, mission.RenderMap());
     }
 
     [Fact]
