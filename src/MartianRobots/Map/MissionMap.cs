@@ -1,4 +1,7 @@
-namespace MartianRobots;
+using MartianRobots.Domain.Planets;
+using MartianRobots.Domain.Positions;
+
+namespace MartianRobots.Map;
 
 /// <summary>Draws Earth's picture of Mars as ASCII text, north at the top and `0 0` at the bottom left.</summary>
 internal static class MissionMap

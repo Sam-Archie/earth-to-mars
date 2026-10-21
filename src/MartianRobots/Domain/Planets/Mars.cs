@@ -1,4 +1,6 @@
-namespace MartianRobots;
+using MartianRobots.Domain.Positions;
+
+namespace MartianRobots.Domain.Planets;
 
 public sealed record Mars(Square UpperRight)
 {

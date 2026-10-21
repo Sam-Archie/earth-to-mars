@@ -1,4 +1,10 @@
-namespace MartianRobots;
+using MartianRobots.Domain;
+using MartianRobots.Domain.Commands;
+using MartianRobots.Domain.Planets;
+using MartianRobots.Domain.Positions;
+using MartianRobots.Map;
+
+namespace MartianRobots.Missions;
 
 public sealed class Mission(Mars mars)
 {

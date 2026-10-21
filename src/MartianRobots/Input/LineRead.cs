@@ -1,4 +1,4 @@
-namespace MartianRobots;
+namespace MartianRobots.Input;
 
 /// <summary>What a line reader made of one line from Earth: either the parsed value, or a hint naming the shape it expects.</summary>
 public sealed class LineRead<T> where T : class

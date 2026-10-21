@@ -1,3 +1,8 @@
+using MartianRobots.Domain.Planets;
+using MartianRobots.Domain;
+using MartianRobots.Input;
+using MartianRobots.Missions;
+
 namespace MartianRobots.Tests;
 
 public class MissionTests

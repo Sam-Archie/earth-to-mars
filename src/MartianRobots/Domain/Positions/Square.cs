@@ -1,4 +1,4 @@
-namespace MartianRobots;
+namespace MartianRobots.Domain.Positions;
 
 public sealed record Square(int X, int Y)
 {

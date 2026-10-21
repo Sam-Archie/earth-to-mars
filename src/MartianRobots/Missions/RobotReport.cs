@@ -1,4 +1,7 @@
-namespace MartianRobots;
+using MartianRobots.Domain.Positions;
+using MartianRobots.Domain;
+
+namespace MartianRobots.Missions;
 
 public sealed record RobotReport(Position Final, bool Lost, ClaimOutcome Claim, bool CompletedMission)
 {

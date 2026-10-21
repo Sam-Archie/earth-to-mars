@@ -1,3 +1,6 @@
+using MartianRobots.Domain.Planets;
+using MartianRobots.Input;
+
 namespace MartianRobots.Tests;
 
 public class LineReaderTests

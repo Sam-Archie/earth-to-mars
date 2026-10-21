@@ -1,4 +1,4 @@
-namespace MartianRobots;
+namespace MartianRobots.Domain.Positions;
 
 public sealed record Position(Square Square, Orientation Orientation)
 {

@@ -1,4 +1,5 @@
-using MartianRobots;
+using MartianRobots.Input;
+using MartianRobots.Missions;
 
 var builder = WebApplication.CreateBuilder(args);
 var app = builder.Build();

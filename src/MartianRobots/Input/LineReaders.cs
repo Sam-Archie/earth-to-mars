@@ -1,7 +1,9 @@
 using System.Globalization;
-using MartianRobots.Commands;
+using MartianRobots.Domain.Commands;
+using MartianRobots.Domain.Planets;
+using MartianRobots.Domain.Positions;
 
-namespace MartianRobots;
+namespace MartianRobots.Input;
 
 /// <summary>Reads each kind of line Earth sends: the size of Mars, a robot's starting position, and its instructions.</summary>
 public static class LineReaders

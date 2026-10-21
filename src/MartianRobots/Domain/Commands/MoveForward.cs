@@ -1,4 +1,6 @@
-namespace MartianRobots.Commands;
+using MartianRobots.Domain.Positions;
+
+namespace MartianRobots.Domain.Commands;
 
 internal sealed class MoveForward : ICommand
 {

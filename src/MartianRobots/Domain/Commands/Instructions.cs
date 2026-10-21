@@ -1,6 +1,4 @@
-using MartianRobots.Commands;
-
-namespace MartianRobots;
+namespace MartianRobots.Domain.Commands;
 
 public sealed class Instructions
 {
