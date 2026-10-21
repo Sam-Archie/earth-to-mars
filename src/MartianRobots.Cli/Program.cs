@@ -26,6 +26,7 @@ for (var robotNumber = 1; ; robotNumber++)
     var report = mission.Send(startPosition, instructions);
     Console.WriteLine(report.ResultLine);
     Announce(robotNumber, report);
+    Console.Error.WriteLine(mission.RenderMap());
 }
 
 static void Announce(int robotNumber, RobotReport report)

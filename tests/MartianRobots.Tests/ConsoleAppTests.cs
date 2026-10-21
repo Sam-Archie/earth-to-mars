@@ -45,6 +45,25 @@ public class ConsoleAppTests
         Assert.Contains("Mission complete", run.Stderr);
     }
 
+    [Fact]
+    public async Task Mission_map_is_written_to_stderr_after_every_robot_claimed_or_lost()
+    {
+        var sample = await File.ReadAllTextAsync(Path.Combine(AppContext.BaseDirectory, "brief-sample.txt"));
+
+        var run = await RunConsoleApp(sample);
+
+        var stderr = run.Stderr.ReplaceLineEndings("\n");
+        var mapsWritten = stderr.Split("~ Earth's view of Mars ~").Length - 1;
+        Assert.Equal(3, mapsWritten);
+        Assert.Contains("""
+            3 ? ? 3 * ? ?
+            2 ? ? ? ? ? ?
+            1 ? 1 ? ? ? ?
+            0 ? ? ? ? ? ?
+              0 1 2 3 4 5
+            """, stderr);
+    }
+
     private sealed record ConsoleRun(string Stdout, string Stderr, int ExitCode);
 
     private static async Task<ConsoleRun> RunConsoleApp(string stdin)
