@@ -123,4 +123,13 @@ public class MissionTests
         Assert.Equal("5 3 N LOST", first.ResultLine);
         Assert.Equal("5 3 E", second.ResultLine);
     }
+
+    [Fact]
+    public void Robot_finishing_on_Mars_claims_its_square()
+    {
+        var report = StartMission("5 3").Send("1 1 E", "F");
+
+        Assert.Equal("2 1 E", report.ResultLine);
+        Assert.Equal(ClaimOutcome.Claimed, report.Claim);
+    }
 }
