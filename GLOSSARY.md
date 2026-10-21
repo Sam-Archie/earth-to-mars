@@ -1,19 +1,23 @@
 # Martian Robots
 
-Robots move on a bounded rectangular grid on Mars, following instructions sent from Earth. A robot that moves off the grid is lost and leaves a scent behind.
+Robots move across Mars, a bounded rectangle of squares, following instructions sent from Earth. A robot that moves off the edge of Mars is lost and leaves a scent behind.
 
 ## Language
 
+**Mars**:
+The bounded rectangle of squares the robots move on, from `0 0` to the upper-right corner Earth names. It holds nothing but its size.
+_Avoid_: Grid, world, board, plateau
+
 **Mission**:
-One transmission from Earth: a grid and the robots sent to it, run one after another. Scents and claims last for one mission.
+One transmission from Earth: the size of Mars and the robots sent to it, run one after another. Scents and claims last for one mission.
 _Avoid_: Session, game
 
 **Scent**:
-A marker left by a lost robot on the last square it occupied. A scented square stops any later robot from moving off the grid from it, over any edge.
+A marker left by a lost robot on the last square it occupied. A scented square stops any later robot from moving off Mars from it, over any edge.
 _Avoid_: Mark, flag, warning
 
 **Lost robot**:
-A robot that moved off the edge of the grid. It is gone for good and leaves a scent.
+A robot that moved off the edge of Mars. It is gone for good and leaves a scent.
 _Avoid_: Dead, crashed, fallen
 
 **Claim**:
