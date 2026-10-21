@@ -95,6 +95,57 @@ public partial class ConsoleAppTests
             run.MissionLogEntries);
     }
 
+    [Fact]
+    public async Task Each_entry_reaches_the_mission_log_while_the_mission_is_still_running()
+    {
+        var workingDirectory = Directory.CreateTempSubdirectory();
+        try
+        {
+            using var process = StartConsoleAppIn(workingDirectory);
+            await process.StandardInput.WriteLineAsync("5 3");
+            await process.StandardInput.FlushAsync();
+
+            var entryLogged = await WaitUntil(() => ReadMissionLogWhileOpen(workingDirectory).Contains("< 5 3"));
+
+            process.StandardInput.Close();
+            await process.WaitForExitAsync();
+            Assert.True(entryLogged);
+        }
+        finally
+        {
+            workingDirectory.Delete(recursive: true);
+        }
+    }
+
+    private static async Task<bool> WaitUntil(Func<bool> condition)
+    {
+        var giveUpAt = DateTime.UtcNow.AddSeconds(10);
+        while (DateTime.UtcNow < giveUpAt)
+        {
+            if (condition())
+            {
+                return true;
+            }
+
+            await Task.Delay(50);
+        }
+
+        return false;
+    }
+
+    // The running app holds the log open, so read it without asking for sole access.
+    private static string ReadMissionLogWhileOpen(DirectoryInfo workingDirectory)
+    {
+        var missionLogPath = Path.Combine(workingDirectory.FullName, "logs", "missions.txt");
+        if (!File.Exists(missionLogPath))
+        {
+            return "";
+        }
+
+        using var missionLog = new FileStream(missionLogPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+        return new StreamReader(missionLog).ReadToEnd();
+    }
+
     [GeneratedRegex(@"^--- Mission started \d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2} ---$")]
     private static partial Regex MissionHeader();
 
