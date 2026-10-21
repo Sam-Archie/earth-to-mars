@@ -1,6 +1,6 @@
 using MartianRobots;
 
-var mission = new Mission(LineReaders.ReadMars(Console.ReadLine()!));
+var mission = new Mission(LineReaders.ReadMars(Console.ReadLine()!).Value!);
 while (Console.ReadLine() is { } positionLine && Console.ReadLine() is { } instructionsLine)
 {
     var report = mission.Send(LineReaders.ReadPosition(positionLine), LineReaders.ReadInstructions(instructionsLine));

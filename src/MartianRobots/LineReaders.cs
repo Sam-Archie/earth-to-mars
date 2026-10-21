@@ -12,10 +12,12 @@ public static class LineReaders
         ['F'] = new MoveForward(),
     };
 
-    public static Mars ReadMars(string line)
+    public static LineRead<Mars> ReadMars(string line)
     {
         var parts = line.Split(' ');
-        return new Mars(new Square(int.Parse(parts[0]), int.Parse(parts[1])));
+        return parts.Length == 2 && int.TryParse(parts[0], out var x) && int.TryParse(parts[1], out var y)
+            ? LineRead<Mars>.Parsed(new Mars(new Square(x, y)))
+            : LineRead<Mars>.Bad("Static on the line. Mars's size is the upper-right square, two numbers like `5 3`.");
     }
 
     public static Position ReadPosition(string line)

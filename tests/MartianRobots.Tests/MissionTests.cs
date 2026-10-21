@@ -2,7 +2,7 @@ namespace MartianRobots.Tests;
 
 public class MissionTests
 {
-    private static Mission StartMission(string marsLine) => new(LineReaders.ReadMars(marsLine));
+    private static Mission StartMission(string marsLine) => new(LineReaders.ReadMars(marsLine).Value!);
 
     private static RobotReport Send(Mission mission, string positionLine, string instructionsLine) =>
         mission.Send(LineReaders.ReadPosition(positionLine), LineReaders.ReadInstructions(instructionsLine));
