@@ -239,8 +239,8 @@ public class MissionTests
     public void Map_columns_widen_to_fit_robot_10_and_stay_aligned()
     {
         var mission = StartMission("3 0");
-        mission.Send("0 0 N", "F");
-        for (var robotNumber = 2; robotNumber <= 9; robotNumber++)
+        // Robot 1 is lost at 0 0 and leaves a scent, robot 2 stops there and claims it, robots 3 to 9 find it already claimed.
+        for (var robotNumber = 1; robotNumber <= 9; robotNumber++)
         {
             mission.Send("0 0 N", "F");
         }
