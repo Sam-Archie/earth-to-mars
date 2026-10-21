@@ -3,6 +3,7 @@ using MartianRobots.Cli;
 using Microsoft.Extensions.Logging;
 
 using var missionLogger = new MissionFileLogger();
+missionLogger.LogMissionStarted();
 var mars = AskUntilRead("Earth to Mars, come in. How big is Mars? Send its upper-right square, like `5 3`.", LineReaders.ReadMars, missionLogger);
 if (mars is null)
 {

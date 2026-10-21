@@ -146,7 +146,7 @@ public partial class ConsoleAppTests
         return new StreamReader(missionLog).ReadToEnd();
     }
 
-    [GeneratedRegex(@"^--- Mission started \d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2} ---$")]
+    [GeneratedRegex(@"^\d{2}:\d{2}:\d{2} --- Mission started \d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2} ---$")]
     private static partial Regex MissionHeader();
 
     [GeneratedRegex(@"^\d{2}:\d{2}:\d{2} ")]

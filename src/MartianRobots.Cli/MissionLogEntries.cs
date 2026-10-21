@@ -5,6 +5,9 @@ namespace MartianRobots.Cli;
 /// <summary>The mission log's entries, in domain words, on any ILogger.</summary>
 public static class MissionLogEntries
 {
+    public static void LogMissionStarted(this ILogger missionLogger) =>
+        missionLogger.LogInformation("--- Mission started {Started:yyyy-MM-dd HH:mm:ss} ---", DateTime.Now);
+
     public static void LogLineReceived(this ILogger missionLogger, string line) =>
         missionLogger.LogInformation("< {Line}", line);
 
