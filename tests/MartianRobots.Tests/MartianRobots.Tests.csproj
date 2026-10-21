@@ -18,6 +18,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="..\..\samples\brief-sample.txt" Link="brief-sample.txt" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\src\MartianRobots\MartianRobots.csproj" />
     <ProjectReference Include="..\..\src\MartianRobots.Cli\MartianRobots.Cli.csproj" />
   </ItemGroup>
