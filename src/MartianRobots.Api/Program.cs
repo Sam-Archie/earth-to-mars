@@ -37,10 +37,10 @@ app.MapPost("/missions", async (HttpRequest request) =>
             return RejectWith(instructionsRead.Hint);
         }
 
-        resultLines.Add(mission.Send(startPosition, instructions).ResultLine + "\n");
+        resultLines.Add(mission.Send(startPosition, instructions).ResultLine);
     }
 
-    return Results.Text(string.Concat(resultLines));
+    return Results.Text(string.Concat(resultLines.Select(resultLine => resultLine + "\n")));
 });
 
 app.Run();

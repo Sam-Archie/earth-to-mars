@@ -32,13 +32,13 @@ public class ApiTests(WebApplicationFactory<Program> api) : IClassFixture<WebApp
     [InlineData("5 X\n1 1 E\nF\n", "5 3")]
     [InlineData("5 3\n7 1 E\nF\n", "`0 0` and `5 3`")]
     [InlineData("5 3\n1 1 E\nFFZ\n", "`Z`")]
-    public async Task A_bad_line_is_rejected_with_its_hint(string missionText, string hintShape)
+    public async Task A_bad_line_is_rejected_with_its_hint(string missionText, string hintFragment)
     {
         var response = await PostMission(missionText);
 
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
         Assert.Equal("text/plain", response.Content.Headers.ContentType?.MediaType);
-        Assert.Contains(hintShape, await response.Content.ReadAsStringAsync());
+        Assert.Contains(hintFragment, await response.Content.ReadAsStringAsync());
     }
 
     [Fact]
