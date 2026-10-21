@@ -1,9 +1,47 @@
 using MartianRobots;
 
-var mars = LineReaders.ReadMars(Console.ReadLine()!).Value!;
-var mission = new Mission(mars);
-while (Console.ReadLine() is { } positionLine && Console.ReadLine() is { } instructionsLine)
+var mars = Ask("Earth to Mars, come in. How big is Mars? Send its upper-right square, like `5 3`.", LineReaders.ReadMars);
+if (mars is null)
 {
-    var report = mission.Send(LineReaders.ReadPosition(positionLine, mars).Value!, LineReaders.ReadInstructions(instructionsLine).Value!);
-    Console.WriteLine(report.ResultLine);
+    return;
+}
+
+var mission = new Mission(mars);
+for (var robot = 1; ; robot++)
+{
+    var start = Ask($"Robot {robot}, where do you land? Send a square and an orientation, like `1 1 E`.",
+        line => LineReaders.ReadPosition(line, mars));
+    if (start is null)
+    {
+        return;
+    }
+
+    var instructions = Ask($"Robot {robot}, standing by for instructions, like `RFRF`.", LineReaders.ReadInstructions);
+    if (instructions is null)
+    {
+        return;
+    }
+
+    Console.WriteLine(mission.Send(start, instructions).ResultLine);
+}
+
+// Prompts and hints go to stderr so stdout carries only the brief's result lines. Null means Earth stopped transmitting.
+static T? Ask<T>(string prompt, Func<string, LineRead<T>> read) where T : class
+{
+    while (true)
+    {
+        Console.Error.WriteLine(prompt);
+        if (Console.ReadLine() is not { } line)
+        {
+            return null;
+        }
+
+        var lineRead = read(line);
+        if (lineRead.Value is { } value)
+        {
+            return value;
+        }
+
+        Console.Error.WriteLine(lineRead.Hint);
+    }
 }
