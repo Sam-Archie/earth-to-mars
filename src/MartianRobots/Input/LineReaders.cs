@@ -11,13 +11,6 @@ public static class LineReaders
     private const int LargestXOrY = 50;
     private const int InstructionsLengthLimit = 100;
 
-    private static readonly IReadOnlyDictionary<char, ICommand> CommandsByLetter = new Dictionary<char, ICommand>
-    {
-        ['L'] = new TurnLeft(),
-        ['R'] = new TurnRight(),
-        ['F'] = new MoveForward(),
-    };
-
     private static readonly IReadOnlyDictionary<string, Orientation> OrientationsByLetter =
         Enum.GetValues<Orientation>().ToDictionary(orientation => orientation.ToString());
 
@@ -72,10 +65,10 @@ public static class LineReaders
         var commands = new List<ICommand>();
         foreach (var letter in letters)
         {
-            if (!CommandsByLetter.TryGetValue(letter, out var command))
+            if (!KnownCommands.ByLetter.TryGetValue(letter, out var command))
             {
                 return LineRead<Instructions>.Bad(
-                    $"Mars doesn't speak `{letter}`. Robots know {string.Join(", ", CommandsByLetter.Keys)}, like `RFRF`.");
+                    $"Mars doesn't speak `{letter}`. Robots know {string.Join(", ", KnownCommands.ByLetter.Keys)}, like `RFRF`.");
             }
 
             commands.Add(command);
