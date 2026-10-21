@@ -5,7 +5,7 @@ The brief is `docs/brief.md` (source of truth for the problem). `README.md` is t
 ## Standing decisions
 
 - Stack: .NET 10, pinned in `global.json` (`rollForward: latestFeature`), xunit. A reviewer should need nothing beyond the SDK: `dotnet test` from the root runs everything.
-- Layout: one `.sln` at the root; `src/MartianRobots` (core), `src/MartianRobots.Cli` (console adapter), `src/MartianRobots.Api` (HTTP adapter), `tests/MartianRobots.Tests`.
+- Layout: one `.slnx` solution at the root (the .NET 10 default format); `src/MartianRobots` (core), `src/MartianRobots.Cli` (console adapter), `src/MartianRobots.Api` (HTTP adapter), `tests/MartianRobots.Tests`.
 - Shape: the core is a class library with no `Console` and no ASP.NET reference, exposing parse → simulate → format. The console app is a separate, thin adapter (read stdin, call the core, write stdout). The API is a second thin adapter: one `POST /missions` route, each request its own mission, no CORS, auth or stubs. Tests target the core directly, plus one end-to-end test that runs the brief's sample through the CLI and one through the API.
 - Scope: the program, its minimal API and their tests. No UI, database or pipeline is built; the README describes what would come next.
 - Simplicity: this is a two-to-three-hour piece of work and the brief asks for "as simple as possible". No layered architecture. One deliberate seam for future command types; everything else plain.
