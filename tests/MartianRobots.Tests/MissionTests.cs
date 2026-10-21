@@ -153,4 +153,16 @@ public class MissionTests
         Assert.Equal("2 1 W", second.ResultLine);
         Assert.Equal(ClaimOutcome.AlreadyClaimed, second.Claim);
     }
+
+    [Fact]
+    public void Robot_passes_through_a_claimed_square_and_claims_where_it_finishes()
+    {
+        var mission = StartMission("5 3");
+
+        mission.Send("1 1 E", "F");
+        var second = mission.Send("1 1 E", "FF");
+
+        Assert.Equal("3 1 E", second.ResultLine);
+        Assert.Equal(ClaimOutcome.Claimed, second.Claim);
+    }
 }
