@@ -53,4 +53,13 @@ public class MissionTests
 
         Assert.Equal(expected, report.ResultLine);
     }
+
+    [Fact]
+    public void Robot_moving_off_Mars_is_lost_at_its_last_square_and_skips_its_remaining_commands()
+    {
+        var report = Send(StartMission("5 3"), "3 2 N", "FFRR");
+
+        Assert.Equal("3 3 N LOST", report.ResultLine);
+        Assert.True(report.Lost);
+    }
 }

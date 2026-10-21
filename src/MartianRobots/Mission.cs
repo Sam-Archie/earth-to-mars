@@ -7,7 +7,13 @@ public sealed class Mission(Mars mars)
         var position = start;
         foreach (var command in instructions.Commands)
         {
-            position = command.Propose(position);
+            var proposed = command.Propose(position);
+            if (!mars.Contains(proposed.Square))
+            {
+                return new RobotReport($"{position} LOST", Lost: true);
+            }
+
+            position = proposed;
         }
 
         return new RobotReport(position.ToString(), Lost: false);
