@@ -5,7 +5,7 @@ using Microsoft.Extensions.Logging;
 namespace MartianRobots.Cli;
 
 /// <summary>
-/// The link Earth's transmissions arrive on: asks Earth for each line, reads it from stdin, and asks again until the line reads.
+/// Earth's side of the mission: asks Earth for each line, reads it from stdin, and asks again until the line reads.
 /// Prompts and hints go to stderr so stdout carries only the brief's result lines. Null means Earth stopped transmitting.
 /// </summary>
 public sealed class EarthLink(ILogger missionLogger)
