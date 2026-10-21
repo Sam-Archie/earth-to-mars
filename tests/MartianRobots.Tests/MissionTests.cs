@@ -236,6 +236,26 @@ public class MissionTests
     }
 
     [Fact]
+    public void Map_columns_widen_to_fit_robot_10_and_stay_aligned()
+    {
+        var mission = StartMission("3 0");
+        mission.Send("0 0 N", "F");
+        for (var robotNumber = 2; robotNumber <= 9; robotNumber++)
+        {
+            mission.Send("0 0 N", "F");
+        }
+
+        mission.Send("2 0 N", "");
+
+        Assert.Equal("""
+               N
+               ^   ~ Earth's view of Mars ~
+            0  2  ? 10  ?
+               0  1  2  3
+            """, mission.RenderMap());
+    }
+
+    [Fact]
     public void Scents_and_claims_last_for_one_mission_only()
     {
         var firstMission = StartMission("5 3");

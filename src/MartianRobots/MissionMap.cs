@@ -9,19 +9,24 @@ internal static class MissionMap
     public static string Render(Mars mars, IReadOnlyDictionary<Square, int> claimingRobotNumbers, IReadOnlySet<Square> scents)
     {
         var yLabelWidth = mars.UpperRight.Y.ToString().Length;
-        var axisIndent = new string(' ', yLabelWidth + 1);
-        var xLabels = Enumerable.Range(0, mars.UpperRight.X + 1).ToList();
+        var highestRobotNumberShown = claimingRobotNumbers.Values.DefaultIfEmpty(0).Max();
+        var columnWidth = Math.Max(mars.UpperRight.X.ToString().Length, highestRobotNumberShown.ToString().Length);
+        var northMarkerIndent = new string(' ', yLabelWidth + columnWidth);
+        var xFromWestToEast = Enumerable.Range(0, mars.UpperRight.X + 1).ToList();
 
-        var mapLines = new List<string> { $"{axisIndent}N", $"{axisIndent}^   ~ Earth's view of Mars ~" };
+        var mapLines = new List<string> { $"{northMarkerIndent}N", $"{northMarkerIndent}^   ~ Earth's view of Mars ~" };
         for (var y = mars.UpperRight.Y; y >= 0; y--)
         {
-            var rowSymbols = xLabels.Select(x => SymbolFor(new Square(x, y), claimingRobotNumbers, scents));
-            mapLines.Add($"{y.ToString().PadLeft(yLabelWidth)} {string.Join(' ', rowSymbols)}");
+            var rowSymbols = xFromWestToEast.Select(x => SymbolFor(new Square(x, y), claimingRobotNumbers, scents));
+            mapLines.Add($"{y.ToString().PadLeft(yLabelWidth)} {JoinIntoColumns(rowSymbols, columnWidth)}");
         }
 
-        mapLines.Add($"{axisIndent}{string.Join(' ', xLabels)}");
+        mapLines.Add($"{new string(' ', yLabelWidth)} {JoinIntoColumns(xFromWestToEast.Select(x => x.ToString()), columnWidth)}");
         return string.Join('\n', mapLines);
     }
+
+    private static string JoinIntoColumns(IEnumerable<string> symbols, int columnWidth) =>
+        string.Join(' ', symbols.Select(symbol => symbol.PadLeft(columnWidth)));
 
     private static string SymbolFor(Square square, IReadOnlyDictionary<Square, int> claimingRobotNumbers, IReadOnlySet<Square> scents)
     {
