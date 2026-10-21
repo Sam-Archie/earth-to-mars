@@ -33,9 +33,15 @@ public static class LineReaders
     {
         var parts = line.Split(' ');
         var square = new Square(int.Parse(parts[0]), int.Parse(parts[1]));
-        return mars.Contains(square)
+        if (!mars.Contains(square))
+        {
+            return LineRead<Position>.Bad($"That square is off the map. Robots start between `0 0` and `{mars.UpperRight}`.");
+        }
+
+        // Matched by name because Enum.TryParse would also take "1" or "N,E".
+        return Enum.GetNames<Orientation>().Contains(parts[2])
             ? LineRead<Position>.Parsed(new Position(square, Enum.Parse<Orientation>(parts[2])))
-            : LineRead<Position>.Bad($"That square is off the map. Robots start between `0 0` and `{mars.UpperRight}`.");
+            : LineRead<Position>.Bad("The robot's compass is spinning. Face it N, E, S or W, like `1 1 E`.");
     }
 
     public static Instructions ReadInstructions(string line) =>

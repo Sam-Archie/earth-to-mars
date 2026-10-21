@@ -31,5 +31,14 @@ public class LineReaderTests
         Assert.Contains("5 3", read.Hint);
     }
 
+    [Fact]
+    public void Starting_position_with_an_unknown_orientation_gets_a_hint_naming_the_four()
+    {
+        var read = LineReaders.ReadPosition("1 1 Q", Mars5By3);
+
+        Assert.Null(read.Value);
+        Assert.Contains("N, E, S or W", read.Hint);
+    }
+
     private static readonly Mars Mars5By3 = LineReaders.ReadMars("5 3").Value!;
 }
