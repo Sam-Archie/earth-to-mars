@@ -81,12 +81,13 @@ public class MissionTests
     public void Robot_starting_on_a_scented_square_ignores_a_move_off_Mars()
     {
         var mission = StartMission("5 3");
-        Send(mission, "2 3 N", "F");
 
-        var report = Send(mission, "2 3 N", "F");
+        var first = Send(mission, "2 3 N", "F");
+        var second = Send(mission, "2 3 N", "F");
 
-        Assert.Equal("2 3 N", report.ResultLine);
-        Assert.False(report.Lost);
+        Assert.Equal("2 3 N LOST", first.ResultLine);
+        Assert.Equal("2 3 N", second.ResultLine);
+        Assert.False(second.Lost);
     }
 
     [Fact]
