@@ -50,15 +50,15 @@ public static class LineReaders
 
     public static LineRead<Instructions> ReadInstructions(string line)
     {
-        line = Tidy(line);
-        if (line.Length >= InstructionsLimit)
+        var letters = Tidy(line);
+        if (letters.Length >= InstructionsLimit)
         {
             return LineRead<Instructions>.Bad(
-                $"That's {line.Length} letters and the antenna overheats at {InstructionsLimit}. Send fewer than {InstructionsLimit}.");
+                $"That's {letters.Length} letters and the antenna overheats at {InstructionsLimit}. Send fewer than {InstructionsLimit}.");
         }
 
         var commands = new List<ICommand>();
-        foreach (var letter in line)
+        foreach (var letter in letters)
         {
             if (!CommandsByLetter.TryGetValue(letter, out var command))
             {
