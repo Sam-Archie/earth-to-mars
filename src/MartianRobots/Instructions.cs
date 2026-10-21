@@ -1,3 +1,5 @@
+using MartianRobots.Commands;
+
 namespace MartianRobots;
 
 public sealed class Instructions

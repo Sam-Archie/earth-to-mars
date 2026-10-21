@@ -1,8 +1,17 @@
+using MartianRobots.Commands;
+
 namespace MartianRobots;
 
 /// <summary>Reads each kind of line Earth sends: the size of Mars, a robot's starting position, and its instructions.</summary>
 public static class LineReaders
 {
+    private static readonly IReadOnlyDictionary<char, ICommand> CommandsByLetter = new Dictionary<char, ICommand>
+    {
+        ['L'] = new TurnLeft(),
+        ['R'] = new TurnRight(),
+        ['F'] = new MoveForward(),
+    };
+
     public static Mars ReadMars(string line)
     {
         var parts = line.Split(' ');
@@ -16,5 +25,5 @@ public static class LineReaders
     }
 
     public static Instructions ReadInstructions(string line) =>
-        new(line.Select(letter => Commands.ByLetter[letter]).ToList());
+        new(line.Select(letter => CommandsByLetter[letter]).ToList());
 }

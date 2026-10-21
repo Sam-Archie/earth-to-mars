@@ -1,4 +1,4 @@
-namespace MartianRobots;
+namespace MartianRobots.Commands;
 
 internal sealed class TurnLeft : ICommand
 {
