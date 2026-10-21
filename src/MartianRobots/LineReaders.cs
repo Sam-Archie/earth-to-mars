@@ -19,12 +19,12 @@ public static class LineReaders
     public static LineRead<Mars> ReadMars(string line)
     {
         var parts = PartsOf(line);
-        if (parts.Length != 2 || !TryReadSquare(parts[0], parts[1], out var upperRight))
+        if (parts.Length != 2 || ReadSquare(parts) is not { } upperRight)
         {
             return LineRead<Mars>.Bad("Static on the line. Mars's size is the upper-right square, two numbers like `5 3`.");
         }
 
-        return IsCoordinate(upperRight.X) && IsCoordinate(upperRight.Y)
+        return upperRight.X <= MaxCoordinate && upperRight.Y <= MaxCoordinate
             ? LineRead<Mars>.Parsed(new Mars(upperRight))
             : LineRead<Mars>.Bad($"Our telescopes only reach so far. Each coordinate is 0 to {MaxCoordinate}.");
     }
@@ -32,7 +32,7 @@ public static class LineReaders
     public static LineRead<Position> ReadPosition(string line, Mars mars)
     {
         var parts = PartsOf(line);
-        if (parts.Length != 3 || !TryReadSquare(parts[0], parts[1], out var square))
+        if (parts.Length != 3 || ReadSquare(parts) is not { } square)
         {
             return LineRead<Position>.Bad("Garbled position. Send a square and an orientation, like `1 1 E`.");
         }
@@ -76,16 +76,11 @@ public static class LineReaders
 
     private static string[] PartsOf(string line) => Tidy(line).Split([' ', '\t'], StringSplitOptions.RemoveEmptyEntries);
 
-    private static bool TryReadSquare(string x, string y, out Square square)
-    {
-        var read = TryReadNumber(x, out var column) & TryReadNumber(y, out var row);
-        square = new Square(column, row);
-        return read;
-    }
+    /// <summary>The square named by a line's first two parts, or null when they aren't both numbers.</summary>
+    private static Square? ReadSquare(string[] parts) =>
+        TryReadNumber(parts[0], out var x) && TryReadNumber(parts[1], out var y) ? new Square(x, y) : null;
 
     // Digits only, the same on every machine: no sign, separators or local number formats.
     private static bool TryReadNumber(string part, out int number) =>
         int.TryParse(part, NumberStyles.None, CultureInfo.InvariantCulture, out number);
-
-    private static bool IsCoordinate(int value) => value is >= 0 and <= MaxCoordinate;
 }
