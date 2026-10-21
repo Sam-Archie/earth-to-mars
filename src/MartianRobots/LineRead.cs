@@ -1,7 +1,7 @@
 namespace MartianRobots;
 
 /// <summary>What a line reader made of one line from Earth: either the parsed value, or a hint naming the shape it expects.</summary>
-public sealed record LineRead<T> where T : class
+public sealed class LineRead<T> where T : class
 {
     private LineRead(T? value, string? hint) => (Value, Hint) = (value, hint);
 
