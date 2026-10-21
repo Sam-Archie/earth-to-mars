@@ -5,10 +5,10 @@ using Microsoft.Extensions.Logging;
 namespace MartianRobots.Cli;
 
 /// <summary>
-/// Earth's side of the console: asks for each line, reads it from stdin, and asks again until the line reads.
+/// The link Earth's transmissions arrive on: asks Earth for each line, reads it from stdin, and asks again until the line reads.
 /// Prompts and hints go to stderr so stdout carries only the brief's result lines. Null means Earth stopped transmitting.
 /// </summary>
-public sealed class EarthConsole(ILogger missionLogger)
+public sealed class EarthLink(ILogger missionLogger)
 {
     public Mars? AskForMars() =>
         AskUntilRead("Earth to Mars, come in. How big is Mars? Send its upper-right square, like `5 3`.", LineReaders.ReadMars);

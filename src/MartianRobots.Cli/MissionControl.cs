@@ -9,15 +9,15 @@ public static class MissionControl
     {
         using var missionLogger = new MissionFileLogger();
         missionLogger.LogMissionStarted();
-        var earthConsole = new EarthConsole(missionLogger);
-        var mars = earthConsole.AskForMars();
+        var earthLink = new EarthLink(missionLogger);
+        var mars = earthLink.AskForMars();
         if (mars is null)
         {
             return;
         }
 
         var mission = new Mission(mars);
-        while (earthConsole.AskForRobot(mission.NextRobotNumber, mars) is { } robot)
+        while (earthLink.AskForRobot(mission.NextRobotNumber, mars) is { } robot)
         {
             var report = mission.Send(robot.StartPosition, robot.Instructions);
             Console.WriteLine(report.ResultLine);
