@@ -38,7 +38,7 @@ static void Announce(int robotNumber, RobotReport report)
     }
 
     Console.Error.WriteLine(report.Claim == ClaimOutcome.Claimed
-        ? $"Robot {robotNumber} claims {square} and plants a tiny flag. Earth applauds politely."
+        ? $"Robot {robotNumber} claims {square} for Earth. Earth applauds politely."
         : $"Robot {robotNumber} reaches {square}, but it is already claimed. Awkward. It pretends it was just passing.");
 
     if (report.CompletedMission)
