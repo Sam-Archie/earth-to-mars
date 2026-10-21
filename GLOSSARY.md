@@ -8,6 +8,18 @@ Robots move across Mars, a bounded rectangle of squares, following instructions 
 The bounded rectangle of squares the robots move on, from `0 0` to the upper-right corner Earth names. It holds nothing but its size.
 _Avoid_: Grid, world, board, plateau
 
+**Square**:
+One `x y` spot on Mars, e.g. `3 3`. Scents and claims sit on squares.
+_Avoid_: Coordinate, point, cell
+
+**Orientation**:
+The compass direction a robot faces: N, E, S or W. It decides which square a forward move goes to.
+_Avoid_: Heading, direction, facing
+
+**Position**:
+A square plus an orientation, e.g. `3 3 N`. A robot starts at a position and its result reports one.
+_Avoid_: Location
+
 **Mission**:
 One transmission from Earth: the size of Mars and the robots sent to it, run one after another. Scents and claims last for one mission.
 _Avoid_: Session, game
