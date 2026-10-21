@@ -17,6 +17,10 @@ The brief is `docs/brief.md` (source of truth for the problem). `README.md` is t
 - Value types are records (e.g. a position).
 - File-scoped namespaces.
 - No analyzer or style packages beyond the SDK.
+- Code reads at a glance to an onlooker who skips the string handling:
+  - Every variable, parameter and function is named for what it holds or does, in domain words: `upperRightX`, `orientationLetter`, `robotNumber`, `SplitIntoValues`, not `x`, `parts` or `Tidy`.
+  - A check with more than one part gets a named condition before the `if` (`var marsIsSmallEnough = ...`).
+  - Each failure returns early, and the success path is the last line.
 
 ## Tests
 
