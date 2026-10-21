@@ -11,19 +11,20 @@ internal static class MissionMap
         var yLabelWidth = mars.UpperRight.Y.ToString().Length;
         // A larger number never has fewer digits, so the widest label is the largest number shown.
         var largestNumberShown = claimingRobotNumbers.Values.Append(mars.UpperRight.X).Max();
-        var columnWidth = largestNumberShown.ToString().Length;
+        var symbolWidth = largestNumberShown.ToString().Length;
         var xFromWestToEast = Enumerable.Range(0, mars.UpperRight.X + 1).ToList();
 
         string MapLine(string yLabel, IEnumerable<string> symbols) =>
-            $"{yLabel.PadLeft(yLabelWidth)} {string.Join(' ', symbols.Select(symbol => symbol.PadLeft(columnWidth)))}";
+            $"{yLabel.PadLeft(yLabelWidth)} {string.Join(' ', symbols.Select(symbol => symbol.PadLeft(symbolWidth)))}";
 
         var mapLines = new List<string> { MapLine("", ["N"]), MapLine("", ["^"]) + "   ~ Earth's view of Mars ~" };
-        for (var y = mars.UpperRight.Y; y >= 0; y--)
+        for (var squareY = mars.UpperRight.Y; squareY >= 0; squareY--)
         {
-            mapLines.Add(MapLine(y.ToString(), xFromWestToEast.Select(x => SymbolFor(new Square(x, y), claimingRobotNumbers, scents))));
+            var symbolsWestToEast = xFromWestToEast.Select(squareX => SymbolFor(new Square(squareX, squareY), claimingRobotNumbers, scents));
+            mapLines.Add(MapLine(squareY.ToString(), symbolsWestToEast));
         }
 
-        mapLines.Add(MapLine("", xFromWestToEast.Select(x => x.ToString())));
+        mapLines.Add(MapLine("", xFromWestToEast.Select(squareX => squareX.ToString())));
         return string.Join('\n', mapLines);
     }
 
