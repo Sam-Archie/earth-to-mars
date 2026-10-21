@@ -1,2 +1,4 @@
 .claude/skills/
 skills-lock.json
+bin/
+obj/
