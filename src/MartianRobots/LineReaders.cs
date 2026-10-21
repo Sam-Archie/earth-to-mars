@@ -29,10 +29,13 @@ public static class LineReaders
 
     private static bool IsCoordinate(int value) => value is >= 0 and <= MaxCoordinate;
 
-    public static Position ReadPosition(string line)
+    public static LineRead<Position> ReadPosition(string line, Mars mars)
     {
         var parts = line.Split(' ');
-        return new Position(new Square(int.Parse(parts[0]), int.Parse(parts[1])), Enum.Parse<Orientation>(parts[2]));
+        var square = new Square(int.Parse(parts[0]), int.Parse(parts[1]));
+        return mars.Contains(square)
+            ? LineRead<Position>.Parsed(new Position(square, Enum.Parse<Orientation>(parts[2])))
+            : LineRead<Position>.Bad($"That square is off the map. Robots start between `0 0` and `{mars.UpperRight}`.");
     }
 
     public static Instructions ReadInstructions(string line) =>
