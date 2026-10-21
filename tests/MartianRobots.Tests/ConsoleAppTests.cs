@@ -79,7 +79,7 @@ public partial class ConsoleAppTests
     }
 
     [Fact]
-    public async Task Every_line_Earth_sends_is_logged_with_its_time_bad_lines_included()
+    public async Task Every_line_Earth_sends_is_logged_bad_lines_included()
     {
         var run = await RunConsoleApp("5 X\n5 3\n9 9 N\n");
 
@@ -87,7 +87,7 @@ public partial class ConsoleAppTests
     }
 
     [Fact]
-    public async Task Result_lines_are_logged_after_their_robot_s_lines_and_nothing_from_stderr_is()
+    public async Task Result_lines_are_logged_and_prompts_messages_and_the_map_are_not()
     {
         var run = await RunConsoleApp("5 3\n1 1 E\nRFRFRFRF\n3 2 N\nFRRFLLFFRRFLL\n");
 
