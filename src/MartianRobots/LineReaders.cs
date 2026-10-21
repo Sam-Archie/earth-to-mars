@@ -16,6 +16,9 @@ public static class LineReaders
         ['F'] = new MoveForward(),
     };
 
+    private static readonly IReadOnlyDictionary<string, Orientation> OrientationsByLetter =
+        Enum.GetValues<Orientation>().ToDictionary(orientation => orientation.ToString());
+
     public static LineRead<Mars> ReadMars(string line)
     {
         var parts = PartsOf(line);
@@ -42,9 +45,8 @@ public static class LineReaders
             return LineRead<Position>.Bad($"That square is off the map. Robots start between `0 0` and `{mars.UpperRight}`.");
         }
 
-        // Matched by name because Enum.TryParse would also take "1" or "N,E".
-        return Enum.GetNames<Orientation>().Contains(parts[2])
-            ? LineRead<Position>.Parsed(new Position(square, Enum.Parse<Orientation>(parts[2])))
+        return OrientationsByLetter.TryGetValue(parts[2], out var orientation)
+            ? LineRead<Position>.Parsed(new Position(square, orientation))
             : LineRead<Position>.Bad("The robot's compass is spinning. Face it N, E, S or W, like `1 1 E`.");
     }
 
