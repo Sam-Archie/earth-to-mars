@@ -5,6 +5,8 @@ namespace MartianRobots;
 /// <summary>Reads each kind of line Earth sends: the size of Mars, a robot's starting position, and its instructions.</summary>
 public static class LineReaders
 {
+    private const int MaxCoordinate = 50;
+
     private static readonly IReadOnlyDictionary<char, ICommand> CommandsByLetter = new Dictionary<char, ICommand>
     {
         ['L'] = new TurnLeft(),
@@ -12,27 +14,27 @@ public static class LineReaders
         ['F'] = new MoveForward(),
     };
 
-    private const int MaxCoordinate = 50;
-
     public static LineRead<Mars> ReadMars(string line)
     {
         var parts = line.Split(' ');
-        if (parts.Length != 2 || !int.TryParse(parts[0], out var x) || !int.TryParse(parts[1], out var y))
+        if (parts.Length != 2 || !TryReadSquare(parts[0], parts[1], out var upperRight))
         {
             return LineRead<Mars>.Bad("Static on the line. Mars's size is the upper-right square, two numbers like `5 3`.");
         }
 
-        return IsCoordinate(x) && IsCoordinate(y)
-            ? LineRead<Mars>.Parsed(new Mars(new Square(x, y)))
+        return IsCoordinate(upperRight.X) && IsCoordinate(upperRight.Y)
+            ? LineRead<Mars>.Parsed(new Mars(upperRight))
             : LineRead<Mars>.Bad($"Our telescopes only reach so far. Each coordinate is 0 to {MaxCoordinate}.");
     }
-
-    private static bool IsCoordinate(int value) => value is >= 0 and <= MaxCoordinate;
 
     public static LineRead<Position> ReadPosition(string line, Mars mars)
     {
         var parts = line.Split(' ');
-        var square = new Square(int.Parse(parts[0]), int.Parse(parts[1]));
+        if (parts.Length != 3 || !TryReadSquare(parts[0], parts[1], out var square))
+        {
+            return LineRead<Position>.Bad("Garbled position. Send a square and an orientation, like `1 1 E`.");
+        }
+
         if (!mars.Contains(square))
         {
             return LineRead<Position>.Bad($"That square is off the map. Robots start between `0 0` and `{mars.UpperRight}`.");
@@ -46,4 +48,13 @@ public static class LineReaders
 
     public static Instructions ReadInstructions(string line) =>
         new(line.Select(letter => CommandsByLetter[letter]).ToList());
+
+    private static bool TryReadSquare(string x, string y, out Square square)
+    {
+        var read = int.TryParse(x, out var column) & int.TryParse(y, out var row);
+        square = new Square(column, row);
+        return read;
+    }
+
+    private static bool IsCoordinate(int value) => value is >= 0 and <= MaxCoordinate;
 }

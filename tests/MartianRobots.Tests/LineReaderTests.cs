@@ -40,5 +40,17 @@ public class LineReaderTests
         Assert.Contains("N, E, S or W", read.Hint);
     }
 
+    [Theory]
+    [InlineData("")]
+    [InlineData("1 1")]
+    [InlineData("1 X E")]
+    public void Malformed_starting_position_gets_a_hint_showing_its_shape(string line)
+    {
+        var read = LineReaders.ReadPosition(line, Mars5By3);
+
+        Assert.Null(read.Value);
+        Assert.Contains("1 1 E", read.Hint);
+    }
+
     private static readonly Mars Mars5By3 = LineReaders.ReadMars("5 3").Value!;
 }
