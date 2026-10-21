@@ -197,7 +197,7 @@ public partial class ConsoleAppTests
 
     private static Process StartConsoleAppIn(DirectoryInfo workingDirectory)
     {
-        var startInfo = new ProcessStartInfo("dotnet", [Path.Combine(AppContext.BaseDirectory, "MartianRobots.Cli.dll")])
+        var startInfo = new ProcessStartInfo("dotnet", [Path.Combine(AppContext.BaseDirectory, "console-app", "MartianRobots.Cli.dll")])
         {
             RedirectStandardInput = true,
             RedirectStandardOutput = true,
