@@ -3,3 +3,4 @@ skills-lock.json
 bin/
 obj/
 logs/
+.idea/
