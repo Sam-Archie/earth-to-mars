@@ -8,8 +8,8 @@ namespace MartianRobots.Missions;
 
 public sealed class Mission(Mars mars)
 {
-    private readonly HashSet<Square> _scents = [];
-    private readonly Dictionary<Square, int> _claimingRobotNumbers = [];
+    private readonly Scents _scents = new();
+    private readonly Claims _claims = new();
 
     /// <summary>The number Earth calls the next robot sent: robots count from 1 in the order sent, lost ones included.</summary>
     public int NextRobotNumber { get; private set; } = 1;
@@ -25,21 +25,17 @@ public sealed class Mission(Mars mars)
             {
                 position = proposed;
             }
-            else if (!_scents.Contains(position.Square))
+            else if (!_scents.Protects(position.Square))
             {
-                _scents.Add(position.Square);
+                _scents.LeaveOn(position.Square);
                 return new RobotReport(position, Lost: true, ClaimOutcome.None, CompletedMission: false);
             }
         }
 
-        if (!_claimingRobotNumbers.TryAdd(position.Square, robotNumber))
-        {
-            return new RobotReport(position, Lost: false, ClaimOutcome.AlreadyClaimed, CompletedMission: false);
-        }
-
-        var marsIsFullyClaimed = _claimingRobotNumbers.Count == mars.SquareCount;
-        return new RobotReport(position, Lost: false, ClaimOutcome.Claimed, marsIsFullyClaimed);
+        var claimOutcome = _claims.Claim(position.Square, robotNumber);
+        var marsIsFullyClaimed = claimOutcome == ClaimOutcome.Claimed && _claims.Count == mars.SquareCount;
+        return new RobotReport(position, Lost: false, claimOutcome, marsIsFullyClaimed);
     }
 
-    public string RenderMap() => MissionMap.Render(mars, _claimingRobotNumbers, _scents);
+    public string RenderMap() => MissionMap.Render(mars, _claims.ClaimingRobotNumbers, _scents.ScentedSquares);
 }
