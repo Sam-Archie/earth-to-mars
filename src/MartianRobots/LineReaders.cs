@@ -46,8 +46,22 @@ public static class LineReaders
             : LineRead<Position>.Bad("The robot's compass is spinning. Face it N, E, S or W, like `1 1 E`.");
     }
 
-    public static Instructions ReadInstructions(string line) =>
-        new(line.Select(letter => CommandsByLetter[letter]).ToList());
+    public static LineRead<Instructions> ReadInstructions(string line)
+    {
+        var commands = new List<ICommand>();
+        foreach (var letter in line)
+        {
+            if (!CommandsByLetter.TryGetValue(letter, out var command))
+            {
+                return LineRead<Instructions>.Bad(
+                    $"Mars doesn't speak `{letter}`. Robots know {string.Join(", ", CommandsByLetter.Keys)}, like `RFRF`.");
+            }
+
+            commands.Add(command);
+        }
+
+        return LineRead<Instructions>.Parsed(new Instructions(commands));
+    }
 
     private static bool TryReadSquare(string x, string y, out Square square)
     {

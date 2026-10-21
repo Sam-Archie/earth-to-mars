@@ -52,5 +52,14 @@ public class LineReaderTests
         Assert.Contains("1 1 E", read.Hint);
     }
 
+    [Fact]
+    public void Instructions_with_an_unknown_command_letter_get_a_hint_naming_that_letter()
+    {
+        var read = LineReaders.ReadInstructions("FFZ");
+
+        Assert.Null(read.Value);
+        Assert.Contains("`Z`", read.Hint);
+    }
+
     private static readonly Mars Mars5By3 = LineReaders.ReadMars("5 3").Value!;
 }

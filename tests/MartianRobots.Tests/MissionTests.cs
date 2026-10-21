@@ -10,7 +10,7 @@ public class MissionTests
         private readonly Mission _mission = new(mars);
 
         public RobotReport Send(string positionLine, string instructionsLine) =>
-            _mission.Send(LineReaders.ReadPosition(positionLine, mars).Value!, LineReaders.ReadInstructions(instructionsLine));
+            _mission.Send(LineReaders.ReadPosition(positionLine, mars).Value!, LineReaders.ReadInstructions(instructionsLine).Value!);
     }
 
     [Fact]
