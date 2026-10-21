@@ -38,6 +38,14 @@ public class MissionTests
         Assert.False(report.Lost);
     }
 
+    [Fact]
+    public void Lowercase_lines_from_Earth_are_read_as_uppercase()
+    {
+        var report = StartMission("5 3").Send("1 1 e", "rff");
+
+        Assert.Equal("1 0 S LOST", report.ResultLine);
+    }
+
     [Theory]
     [InlineData("1 1 N", "1 1 W")]
     [InlineData("1 1 W", "1 1 S")]
