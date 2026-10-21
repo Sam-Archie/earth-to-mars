@@ -29,6 +29,7 @@ while (true)
 
     var report = mission.Send(startPosition, instructions);
     Console.WriteLine(report.ResultLine);
+    missionLogger.LogResultSent(report.ResultLine);
     Announce(robotNumber, report);
     Console.Error.WriteLine(mission.RenderMap());
 }

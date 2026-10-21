@@ -86,6 +86,15 @@ public partial class ConsoleAppTests
         Assert.Equal(["< 5 X", "< 5 3", "< 9 9 N"], run.MissionLogEntries);
     }
 
+    [Fact]
+    public async Task Result_lines_are_logged_after_their_robot_s_lines_and_nothing_from_stderr_is()
+    {
+        var run = await RunConsoleApp("5 3\n1 1 E\nRFRFRFRF\n3 2 N\nFRRFLLFFRRFLL\n");
+
+        Assert.Equal(["< 5 3", "< 1 1 E", "< RFRFRFRF", "> 1 1 E", "< 3 2 N", "< FRRFLLFFRRFLL", "> 3 3 N LOST"],
+            run.MissionLogEntries);
+    }
+
     [GeneratedRegex(@"^--- Mission started \d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2} ---$")]
     private static partial Regex MissionHeader();
 
