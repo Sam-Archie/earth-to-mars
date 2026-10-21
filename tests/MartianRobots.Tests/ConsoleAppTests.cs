@@ -33,6 +33,18 @@ public class ConsoleAppTests
         Assert.Equal(0, run.ExitCode);
     }
 
+    [Fact]
+    public async Task Each_robot_s_loss_or_claim_and_the_mission_s_completion_are_announced_on_stderr()
+    {
+        var run = await RunConsoleApp("1 1\n0 1 N\nF\n0 0 N\n\n0 1 N\n\n1 1 N\n\n1 0 N\n\n0 0 E\nF\n");
+
+        Assert.Equal("0 1 N LOST\n0 0 N\n0 1 N\n1 1 N\n1 0 N\n1 0 E\n", run.Stdout);
+        Assert.Contains("Robot 1 is lost in space", run.Stderr);
+        Assert.Contains("Robot 2 claims 0 0", run.Stderr);
+        Assert.Contains("Robot 6 reaches 1 0, but it is already claimed", run.Stderr);
+        Assert.Contains("Mission complete", run.Stderr);
+    }
+
     private sealed record ConsoleRun(string Stdout, string Stderr, int ExitCode);
 
     private static async Task<ConsoleRun> RunConsoleApp(string stdin)

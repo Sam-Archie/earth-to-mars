@@ -23,7 +23,25 @@ for (var robotNumber = 1; ; robotNumber++)
         return;
     }
 
-    Console.WriteLine(mission.Send(startPosition, instructions).ResultLine);
+    var report = mission.Send(startPosition, instructions);
+    Console.WriteLine(report.ResultLine);
+    Announce(robotNumber, report);
+}
+
+static void Announce(int robotNumber, RobotReport report)
+{
+    var square = report.Final.Square;
+    Console.Error.WriteLine(report.Claim switch
+    {
+        ClaimOutcome.Claimed => $"Robot {robotNumber} claims {square} and plants a tiny flag. Earth applauds politely.",
+        ClaimOutcome.AlreadyClaimed => $"Robot {robotNumber} reaches {square}, but it is already claimed. Awkward. It pretends it was just passing.",
+        _ => $"Robot {robotNumber} is lost in space, last seen at {square}. It leaves a scent so no one else follows.",
+    });
+
+    if (report.CompletedMission)
+    {
+        Console.Error.WriteLine("Mission complete! Every square on Mars is claimed. Earth breaks out the space biscuits.");
+    }
 }
 
 // Prompts and hints go to stderr so stdout carries only the brief's result lines. Null means Earth stopped transmitting.
