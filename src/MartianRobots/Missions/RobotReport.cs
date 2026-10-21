@@ -1,5 +1,5 @@
-using MartianRobots.Domain.Positions;
 using MartianRobots.Domain;
+using MartianRobots.Domain.Positions;
 
 namespace MartianRobots.Missions;
 

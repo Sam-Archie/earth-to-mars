@@ -1,5 +1,5 @@
-using MartianRobots.Domain.Planets;
 using MartianRobots.Domain;
+using MartianRobots.Domain.Planets;
 using MartianRobots.Input;
 using MartianRobots.Missions;
 
