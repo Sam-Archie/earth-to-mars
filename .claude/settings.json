@@ -7,7 +7,7 @@
           {
             "type": "command",
             "if": "Bash(git commit*)",
-            "command": "cd \"$CLAUDE_PROJECT_DIR\" && { dotnet format MartianRobots.slnx --verify-no-changes -v q && dotnet test --nologo -v q; } 1>&2 || exit 2",
+            "command": "jq -r '.tool_input.command' | grep -qE '(^|[;&|[:space:]])git[[:space:]]+commit' || exit 0; cd \"$CLAUDE_PROJECT_DIR\" && { dotnet format MartianRobots.slnx --verify-no-changes -v q && dotnet test --nologo -v q; } 1>&2 || exit 2",
             "timeout": 300,
             "statusMessage": "Checking format and tests before commit"
           }
