@@ -256,6 +256,20 @@ public class MissionTests
     }
 
     [Fact]
+    public void Map_columns_widen_to_fit_x_labels_past_9_and_stay_aligned()
+    {
+        var mission = StartMission("10 0");
+        mission.Send("0 0 N", "");
+
+        Assert.Equal("""
+               N
+               ^   ~ Earth's view of Mars ~
+            0  1  ?  ?  ?  ?  ?  ?  ?  ?  ?  ?
+               0  1  2  3  4  5  6  7  8  9 10
+            """, mission.RenderMap());
+    }
+
+    [Fact]
     public void Scents_and_claims_last_for_one_mission_only()
     {
         var firstMission = StartMission("5 3");
