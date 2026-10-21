@@ -3,6 +3,7 @@ namespace MartianRobots;
 public sealed class Mission(Mars mars)
 {
     private readonly HashSet<Square> _scents = [];
+    private readonly HashSet<Square> _claims = [];
 
     public RobotReport Send(Position start, Instructions instructions)
     {
@@ -21,6 +22,7 @@ public sealed class Mission(Mars mars)
             }
         }
 
-        return new RobotReport(position, Lost: false, ClaimOutcome.Claimed);
+        var claim = _claims.Add(position.Square) ? ClaimOutcome.Claimed : ClaimOutcome.AlreadyClaimed;
+        return new RobotReport(position, Lost: false, claim);
     }
 }

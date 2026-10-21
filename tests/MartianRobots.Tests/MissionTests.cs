@@ -141,4 +141,16 @@ public class MissionTests
         Assert.Equal("3 3 N LOST", report.ResultLine);
         Assert.Equal(ClaimOutcome.None, report.Claim);
     }
+
+    [Fact]
+    public void Robot_finishing_on_a_claimed_square_gets_its_result_line_but_finds_it_already_claimed()
+    {
+        var mission = StartMission("5 3");
+
+        mission.Send("1 1 E", "F");
+        var second = mission.Send("3 1 W", "F");
+
+        Assert.Equal("2 1 W", second.ResultLine);
+        Assert.Equal(ClaimOutcome.AlreadyClaimed, second.Claim);
+    }
 }
