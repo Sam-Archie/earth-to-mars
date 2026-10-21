@@ -7,8 +7,9 @@ if (mars is null)
 }
 
 var mission = new Mission(mars);
-for (var robotNumber = 1; ; robotNumber++)
+while (true)
 {
+    var robotNumber = mission.NextRobotNumber;
     var startPosition = AskUntilRead($"Robot {robotNumber}, where do you land? Send a square and an orientation, like `1 1 E`.",
         line => LineReaders.ReadPosition(line, mars));
     if (startPosition is null)
