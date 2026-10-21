@@ -45,3 +45,17 @@ Planned with Matt Pocock's skills (installed in `.claude/skills/`, gitignored). 
 - One ticket per session.
 - Grilling tickets are human-in-the-loop: ask the user, never answer for them.
 - The map's Notes stay plan-only.
+
+## Agent skills
+
+### Issue tracker
+
+Issues live in GitHub Issues on `Sam-Archie/earth-to-mars`, managed with `gh`. See `docs/agents/issue-tracker.md`.
+
+### Triage labels
+
+The five default triage roles, each label named after its role. See `docs/agents/triage-labels.md`.
+
+### Domain docs
+
+Single-context: one `GLOSSARY.md` and `docs/adr/` at the repo root. See `docs/agents/domain.md`.
