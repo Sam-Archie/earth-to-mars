@@ -46,6 +46,14 @@ public class MissionTests
         Assert.Equal("1 0 S LOST", report.ResultLine);
     }
 
+    [Fact]
+    public void Extra_spaces_tabs_and_carriage_returns_in_lines_from_Earth_are_ignored()
+    {
+        var report = StartMission(" 5\t 3 \r").Send("\t1  1 E\r", " RFF \r");
+
+        Assert.Equal("1 0 S LOST", report.ResultLine);
+    }
+
     [Theory]
     [InlineData("1 1 N", "1 1 W")]
     [InlineData("1 1 W", "1 1 S")]

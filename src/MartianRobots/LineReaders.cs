@@ -17,7 +17,7 @@ public static class LineReaders
 
     public static LineRead<Mars> ReadMars(string line)
     {
-        var parts = Tidy(line).Split(' ');
+        var parts = PartsOf(line);
         if (parts.Length != 2 || !TryReadSquare(parts[0], parts[1], out var upperRight))
         {
             return LineRead<Mars>.Bad("Static on the line. Mars's size is the upper-right square, two numbers like `5 3`.");
@@ -30,7 +30,7 @@ public static class LineReaders
 
     public static LineRead<Position> ReadPosition(string line, Mars mars)
     {
-        var parts = Tidy(line).Split(' ');
+        var parts = PartsOf(line);
         if (parts.Length != 3 || !TryReadSquare(parts[0], parts[1], out var square))
         {
             return LineRead<Position>.Bad("Garbled position. Send a square and an orientation, like `1 1 E`.");
@@ -71,7 +71,9 @@ public static class LineReaders
         return LineRead<Instructions>.Parsed(new Instructions(commands));
     }
 
-    private static string Tidy(string line) => line.ToUpperInvariant();
+    private static string Tidy(string line) => line.Trim(' ', '\t', '\r').ToUpperInvariant();
+
+    private static string[] PartsOf(string line) => Tidy(line).Split([' ', '\t'], StringSplitOptions.RemoveEmptyEntries);
 
     private static bool TryReadSquare(string x, string y, out Square square)
     {
