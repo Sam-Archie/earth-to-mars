@@ -1,3 +1,4 @@
+using System.Globalization;
 using MartianRobots.Commands;
 
 namespace MartianRobots;
@@ -77,10 +78,14 @@ public static class LineReaders
 
     private static bool TryReadSquare(string x, string y, out Square square)
     {
-        var read = int.TryParse(x, out var column) & int.TryParse(y, out var row);
+        var read = TryReadNumber(x, out var column) & TryReadNumber(y, out var row);
         square = new Square(column, row);
         return read;
     }
+
+    // Digits only, the same on every machine: no sign, separators or local number formats.
+    private static bool TryReadNumber(string part, out int number) =>
+        int.TryParse(part, NumberStyles.None, CultureInfo.InvariantCulture, out number);
 
     private static bool IsCoordinate(int value) => value is >= 0 and <= MaxCoordinate;
 }

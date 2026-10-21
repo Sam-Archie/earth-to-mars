@@ -4,6 +4,7 @@ public class LineReaderTests
 {
     [Theory]
     [InlineData("5 X")]
+    [InlineData("+5 3")]
     [InlineData("")]
     public void Malformed_size_of_Mars_gets_a_hint_instead_of_a_value(string line)
     {
