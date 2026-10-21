@@ -6,6 +6,7 @@ namespace MartianRobots;
 public static class LineReaders
 {
     private const int MaxCoordinate = 50;
+    private const int InstructionsLimit = 100;
 
     private static readonly IReadOnlyDictionary<char, ICommand> CommandsByLetter = new Dictionary<char, ICommand>
     {
@@ -48,6 +49,12 @@ public static class LineReaders
 
     public static LineRead<Instructions> ReadInstructions(string line)
     {
+        if (line.Length >= InstructionsLimit)
+        {
+            return LineRead<Instructions>.Bad(
+                $"That's {line.Length} letters and the antenna overheats at {InstructionsLimit}. Send fewer than {InstructionsLimit}.");
+        }
+
         var commands = new List<ICommand>();
         foreach (var letter in line)
         {

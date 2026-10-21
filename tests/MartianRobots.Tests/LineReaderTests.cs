@@ -61,5 +61,14 @@ public class LineReaderTests
         Assert.Contains("`Z`", read.Hint);
     }
 
+    [Fact]
+    public void Instructions_of_100_letters_get_a_hint_to_send_fewer()
+    {
+        var read = LineReaders.ReadInstructions(new string('F', 100));
+
+        Assert.Null(read.Value);
+        Assert.Contains("100", read.Hint);
+    }
+
     private static readonly Mars Mars5By3 = LineReaders.ReadMars("5 3").Value!;
 }
