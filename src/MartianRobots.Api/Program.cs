@@ -12,7 +12,7 @@ app.MapPost("/missions", async (HttpRequest request) =>
     var marsRead = LineReaders.ReadMars(earthLines.FirstOrDefault() ?? "");
     if (marsRead.Value is not { } mars)
     {
-        return Results.Text(marsRead.Hint, statusCode: StatusCodes.Status400BadRequest);
+        return RejectWith(marsRead.Hint);
     }
 
     var mission = new Mission(mars);
@@ -22,20 +22,19 @@ app.MapPost("/missions", async (HttpRequest request) =>
         var startPositionRead = LineReaders.ReadPosition(robotLines[0], mars);
         if (startPositionRead.Value is not { } startPosition)
         {
-            return Results.Text(startPositionRead.Hint, statusCode: StatusCodes.Status400BadRequest);
+            return RejectWith(startPositionRead.Hint);
         }
 
         if (robotLines is not [_, var instructionsLine])
         {
-            return Results.Text(
-                $"Robot at `{startPosition}` landed without instructions. Each robot is two lines: a position like `1 1 E`, then instructions like `RFRF`.",
-                statusCode: StatusCodes.Status400BadRequest);
+            return RejectWith(
+                $"Robot at `{startPosition}` landed without instructions. Each robot is two lines: a position like `1 1 E`, then instructions like `RFRF`.");
         }
 
         var instructionsRead = LineReaders.ReadInstructions(instructionsLine);
         if (instructionsRead.Value is not { } instructions)
         {
-            return Results.Text(instructionsRead.Hint, statusCode: StatusCodes.Status400BadRequest);
+            return RejectWith(instructionsRead.Hint);
         }
 
         resultLines.Add(mission.Send(startPosition, instructions).ResultLine + "\n");
@@ -45,3 +44,5 @@ app.MapPost("/missions", async (HttpRequest request) =>
 });
 
 app.Run();
+
+static IResult RejectWith(string? hint) => Results.Text(hint, statusCode: StatusCodes.Status400BadRequest);
