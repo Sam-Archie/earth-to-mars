@@ -8,6 +8,20 @@ public class MissionTests
         mission.Send(LineReaders.ReadPosition(positionLine), LineReaders.ReadInstructions(instructionsLine));
 
     [Fact]
+    public void Brief_sample_reports_each_robot_as_the_brief_does()
+    {
+        var mission = StartMission("5 3");
+
+        var first = Send(mission, "1 1 E", "RFRFRFRF");
+        var second = Send(mission, "3 2 N", "FRRFLLFFRRFLL");
+        var third = Send(mission, "0 3 W", "LLFFFLFLFL");
+
+        Assert.Equal("1 1 E", first.ResultLine);
+        Assert.Equal("3 3 N LOST", second.ResultLine);
+        Assert.Equal("2 3 S", third.ResultLine);
+    }
+
+    [Fact]
     public void Robot_sent_no_instructions_reports_its_starting_position()
     {
         var mission = StartMission("5 3");
