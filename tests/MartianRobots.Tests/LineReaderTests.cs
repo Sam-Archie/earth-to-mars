@@ -15,7 +15,7 @@ public class LineReaderTests
     }
 
     [Fact]
-    public void Size_of_Mars_with_a_coordinate_over_50_gets_a_hint()
+    public void Size_of_Mars_with_an_x_or_y_over_50_gets_a_hint()
     {
         var read = LineReaders.ReadMars("99 3");
 

@@ -12,6 +12,10 @@ _Avoid_: Grid, world, board, plateau
 One `x y` spot on Mars, e.g. `3 3`. Scents and claims sit on squares.
 _Avoid_: Coordinate, point, cell
 
+**X and Y**:
+The two numbers that name a square, written `x y`: x counts squares east from `0`, y counts squares north from `0`. Neither is ever more than 50.
+_Avoid_: Coordinate, column and row
+
 **Orientation**:
 The compass direction a robot faces: N, E, S or W. It decides which square a forward move goes to.
 _Avoid_: Heading, direction, facing

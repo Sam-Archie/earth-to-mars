@@ -6,7 +6,7 @@ namespace MartianRobots;
 /// <summary>Reads each kind of line Earth sends: the size of Mars, a robot's starting position, and its instructions.</summary>
 public static class LineReaders
 {
-    private const int MaxCoordinate = 50;
+    private const int LargestXOrY = 50;
     private const int InstructionsLengthLimit = 100;
 
     private static readonly IReadOnlyDictionary<char, ICommand> CommandsByLetter = new Dictionary<char, ICommand>
@@ -27,10 +27,10 @@ public static class LineReaders
             return LineRead<Mars>.Bad("Static on the line. Mars's size is the upper-right square, two numbers like `5 3`.");
         }
 
-        var marsIsSmallEnough = upperRight.X <= MaxCoordinate && upperRight.Y <= MaxCoordinate;
+        var marsIsSmallEnough = upperRight.X <= LargestXOrY && upperRight.Y <= LargestXOrY;
         if (!marsIsSmallEnough)
         {
-            return LineRead<Mars>.Bad($"Our telescopes only reach so far. Each coordinate is 0 to {MaxCoordinate}.");
+            return LineRead<Mars>.Bad($"Our telescopes only reach so far. Each of x and y is 0 to {LargestXOrY}.");
         }
 
         return LineRead<Mars>.Parsed(new Mars(upperRight));
