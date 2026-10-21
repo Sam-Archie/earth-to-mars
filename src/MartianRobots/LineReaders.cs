@@ -7,7 +7,7 @@ namespace MartianRobots;
 public static class LineReaders
 {
     private const int MaxCoordinate = 50;
-    private const int InstructionsLimit = 100;
+    private const int InstructionsLengthLimit = 100;
 
     private static readonly IReadOnlyDictionary<char, ICommand> CommandsByLetter = new Dictionary<char, ICommand>
     {
@@ -21,21 +21,25 @@ public static class LineReaders
 
     public static LineRead<Mars> ReadMars(string line)
     {
-        var parts = PartsOf(line);
-        if (parts.Length != 2 || ReadSquare(parts) is not { } upperRight)
+        var values = SplitOnSpacesAndTabs(TrimAndUppercase(line));
+        if (values is not [var x, var y] || ReadSquare(x, y) is not { } upperRight)
         {
             return LineRead<Mars>.Bad("Static on the line. Mars's size is the upper-right square, two numbers like `5 3`.");
         }
 
-        return upperRight.X <= MaxCoordinate && upperRight.Y <= MaxCoordinate
-            ? LineRead<Mars>.Parsed(new Mars(upperRight))
-            : LineRead<Mars>.Bad($"Our telescopes only reach so far. Each coordinate is 0 to {MaxCoordinate}.");
+        var marsIsSmallEnough = upperRight.X <= MaxCoordinate && upperRight.Y <= MaxCoordinate;
+        if (!marsIsSmallEnough)
+        {
+            return LineRead<Mars>.Bad($"Our telescopes only reach so far. Each coordinate is 0 to {MaxCoordinate}.");
+        }
+
+        return LineRead<Mars>.Parsed(new Mars(upperRight));
     }
 
     public static LineRead<Position> ReadPosition(string line, Mars mars)
     {
-        var parts = PartsOf(line);
-        if (parts.Length != 3 || ReadSquare(parts) is not { } square)
+        var values = SplitOnSpacesAndTabs(TrimAndUppercase(line));
+        if (values is not [var x, var y, var orientationLetter] || ReadSquare(x, y) is not { } square)
         {
             return LineRead<Position>.Bad("Garbled position. Send a square and an orientation, like `1 1 E`.");
         }
@@ -45,18 +49,22 @@ public static class LineReaders
             return LineRead<Position>.Bad($"That square is off the map. Robots start between `0 0` and `{mars.UpperRight}`.");
         }
 
-        return OrientationsByLetter.TryGetValue(parts[2], out var orientation)
-            ? LineRead<Position>.Parsed(new Position(square, orientation))
-            : LineRead<Position>.Bad("The robot's compass is spinning. Face it N, E, S or W, like `1 1 E`.");
+        if (!OrientationsByLetter.TryGetValue(orientationLetter, out var orientation))
+        {
+            return LineRead<Position>.Bad("The robot's compass is spinning. Face it N, E, S or W, like `1 1 E`.");
+        }
+
+        return LineRead<Position>.Parsed(new Position(square, orientation));
     }
 
     public static LineRead<Instructions> ReadInstructions(string line)
     {
-        var letters = Tidy(line);
-        if (letters.Length >= InstructionsLimit)
+        var letters = TrimAndUppercase(line);
+        var tooManyLetters = letters.Length >= InstructionsLengthLimit;
+        if (tooManyLetters)
         {
             return LineRead<Instructions>.Bad(
-                $"That's {letters.Length} letters and the antenna overheats at {InstructionsLimit}. Send fewer than {InstructionsLimit}.");
+                $"That's {letters.Length} letters and the antenna overheats at {InstructionsLengthLimit}. Send fewer than {InstructionsLengthLimit}.");
         }
 
         var commands = new List<ICommand>();
@@ -74,15 +82,15 @@ public static class LineReaders
         return LineRead<Instructions>.Parsed(new Instructions(commands));
     }
 
-    private static string Tidy(string line) => line.Trim(' ', '\t', '\r').ToUpperInvariant();
+    private static string TrimAndUppercase(string line) => line.Trim(' ', '\t', '\r').ToUpperInvariant();
 
-    private static string[] PartsOf(string line) => Tidy(line).Split([' ', '\t'], StringSplitOptions.RemoveEmptyEntries);
+    private static string[] SplitOnSpacesAndTabs(string line) => line.Split([' ', '\t'], StringSplitOptions.RemoveEmptyEntries);
 
-    /// <summary>The square named by a line's first two parts, or null when they aren't both numbers.</summary>
-    private static Square? ReadSquare(string[] parts) =>
-        TryReadNumber(parts[0], out var x) && TryReadNumber(parts[1], out var y) ? new Square(x, y) : null;
+    /// <summary>The square at <paramref name="x"/> <paramref name="y"/>, or null when either isn't a number.</summary>
+    private static Square? ReadSquare(string x, string y) =>
+        TryReadDigits(x, out var column) && TryReadDigits(y, out var row) ? new Square(column, row) : null;
 
     // Digits only, the same on every machine: no sign, separators or local number formats.
-    private static bool TryReadNumber(string part, out int number) =>
-        int.TryParse(part, NumberStyles.None, CultureInfo.InvariantCulture, out number);
+    private static bool TryReadDigits(string text, out int number) =>
+        int.TryParse(text, NumberStyles.None, CultureInfo.InvariantCulture, out number);
 }
