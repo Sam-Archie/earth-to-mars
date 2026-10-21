@@ -9,24 +9,23 @@ internal static class MissionMap
     public static string Render(Mars mars, IReadOnlyDictionary<Square, int> claimingRobotNumbers, IReadOnlySet<Square> scents)
     {
         var yLabelWidth = mars.UpperRight.Y.ToString().Length;
-        var highestRobotNumberShown = claimingRobotNumbers.Values.DefaultIfEmpty(0).Max();
-        var columnWidth = Math.Max(mars.UpperRight.X.ToString().Length, highestRobotNumberShown.ToString().Length);
-        var northMarkerIndent = new string(' ', yLabelWidth + columnWidth);
+        // A larger number never has fewer digits, so the widest label is the largest number shown.
+        var largestNumberShown = claimingRobotNumbers.Values.Append(mars.UpperRight.X).Max();
+        var columnWidth = largestNumberShown.ToString().Length;
         var xFromWestToEast = Enumerable.Range(0, mars.UpperRight.X + 1).ToList();
 
-        var mapLines = new List<string> { $"{northMarkerIndent}N", $"{northMarkerIndent}^   ~ Earth's view of Mars ~" };
+        string MapLine(string yLabel, IEnumerable<string> symbols) =>
+            $"{yLabel.PadLeft(yLabelWidth)} {string.Join(' ', symbols.Select(symbol => symbol.PadLeft(columnWidth)))}";
+
+        var mapLines = new List<string> { MapLine("", ["N"]), MapLine("", ["^"]) + "   ~ Earth's view of Mars ~" };
         for (var y = mars.UpperRight.Y; y >= 0; y--)
         {
-            var rowSymbols = xFromWestToEast.Select(x => SymbolFor(new Square(x, y), claimingRobotNumbers, scents));
-            mapLines.Add($"{y.ToString().PadLeft(yLabelWidth)} {JoinIntoColumns(rowSymbols, columnWidth)}");
+            mapLines.Add(MapLine(y.ToString(), xFromWestToEast.Select(x => SymbolFor(new Square(x, y), claimingRobotNumbers, scents))));
         }
 
-        mapLines.Add($"{new string(' ', yLabelWidth)} {JoinIntoColumns(xFromWestToEast.Select(x => x.ToString()), columnWidth)}");
+        mapLines.Add(MapLine("", xFromWestToEast.Select(x => x.ToString())));
         return string.Join('\n', mapLines);
     }
-
-    private static string JoinIntoColumns(IEnumerable<string> symbols, int columnWidth) =>
-        string.Join(' ', symbols.Select(symbol => symbol.PadLeft(columnWidth)));
 
     private static string SymbolFor(Square square, IReadOnlyDictionary<Square, int> claimingRobotNumbers, IReadOnlySet<Square> scents)
     {
