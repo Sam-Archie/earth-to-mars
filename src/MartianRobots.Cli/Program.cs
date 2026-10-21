@@ -19,6 +19,7 @@ for (var robot = 1; ; robot++)
     var instructions = Ask($"Robot {robot}, standing by for instructions, like `RFRF`.", LineReaders.ReadInstructions);
     if (instructions is null)
     {
+        Console.Error.WriteLine($"Signal lost before robot {robot} at {start} got its instructions. It stays in the hangar.");
         return;
     }
 

@@ -23,6 +23,16 @@ public class ConsoleAppTests
         Assert.Equal(0, run.ExitCode);
     }
 
+    [Fact]
+    public async Task Robot_left_without_instructions_when_input_ends_is_dropped_with_a_note()
+    {
+        var run = await RunConsoleApp("5 3\n2 3 N\n");
+
+        Assert.Equal("", run.Stdout);
+        Assert.Contains("2 3 N", run.Stderr);
+        Assert.Equal(0, run.ExitCode);
+    }
+
     private sealed record ConsoleRun(string Stdout, string Stderr, int ExitCode);
 
     private static async Task<ConsoleRun> RunConsoleApp(string stdin)
