@@ -39,16 +39,12 @@ The commit history is reviewed.
 - Small commits: one behaviour or one decision each.
 - Messages are clear and easy to read, in the imperative ("Ignore forward move off a scented edge").
 - `dotnet test` and `dotnet format MartianRobots.slnx --verify-no-changes` pass on every commit; a hook in `.claude/settings.json` blocks a commit that fails either.
+- Work outside a ticket runs `/code-review` before it is committed.
 - AI-assisted commits keep the `Co-Authored-By: Claude` trailer.
 
 ## Process
 
-Planned with Matt Pocock's skills (installed in `.claude/skills/`, gitignored). The order is `/wayfinder` → `/to-spec` → `/to-tickets` → `/implement` → README → `/retro`. Once the map exists, its Notes section is the standing context.
-
-- Wayfinder plans; nothing is scaffolded before `/to-tickets`.
-- One ticket per session.
-- Grilling tickets are human-in-the-loop: ask the user, never answer for them.
-- The map's Notes stay plan-only.
+Planned and built with Matt Pocock's skills (installed in `.claude/skills/`, gitignored); the README's AI section records the order. Grilling is human-in-the-loop: ask the user, never answer for them.
 
 ## Agent skills
 
