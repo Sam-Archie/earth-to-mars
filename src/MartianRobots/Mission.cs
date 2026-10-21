@@ -4,11 +4,13 @@ public sealed class Mission(Mars mars)
 {
     private readonly HashSet<Square> _scents = [];
     private readonly Dictionary<Square, int> _claimingRobotNumbers = [];
-    private int _robotsSent;
+
+    /// <summary>The number Earth calls the next robot sent: robots count from 1 in the order sent, lost ones included.</summary>
+    public int NextRobotNumber { get; private set; } = 1;
 
     public RobotReport Send(Position start, Instructions instructions)
     {
-        var robotNumber = ++_robotsSent;
+        var robotNumber = NextRobotNumber++;
         var position = start;
         foreach (var command in instructions.Commands)
         {

@@ -13,6 +13,21 @@ public class MissionTests
             _mission.Send(LineReaders.ReadPosition(positionLine, mars).Value!, LineReaders.ReadInstructions(instructionsLine).Value!);
 
         public string RenderMap() => _mission.RenderMap();
+
+        public int NextRobotNumber => _mission.NextRobotNumber;
+    }
+
+    [Fact]
+    public void Robots_are_numbered_from_1_in_the_order_sent_lost_ones_included()
+    {
+        var mission = StartMission("5 3");
+        var firstNumber = mission.NextRobotNumber;
+
+        mission.Send("3 3 N", "F");
+        mission.Send("1 1 E", "");
+
+        Assert.Equal(1, firstNumber);
+        Assert.Equal(3, mission.NextRobotNumber);
     }
 
     [Fact]
