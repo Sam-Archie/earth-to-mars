@@ -220,6 +220,22 @@ public class MissionTests
     }
 
     [Fact]
+    public void Map_shows_a_claim_over_a_scent_on_the_same_square()
+    {
+        var mission = StartMission("2 1");
+        mission.Send("1 1 N", "F");
+        mission.Send("1 0 N", "F");
+
+        Assert.Equal("""
+              N
+              ^   ~ Earth's view of Mars ~
+            1 ? 2 ?
+            0 ? ? ?
+              0 1 2
+            """, mission.RenderMap());
+    }
+
+    [Fact]
     public void Scents_and_claims_last_for_one_mission_only()
     {
         var firstMission = StartMission("5 3");
