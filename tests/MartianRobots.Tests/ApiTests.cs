@@ -41,6 +41,15 @@ public class ApiTests(WebApplicationFactory<Program> api) : IClassFixture<WebApp
         Assert.Contains(hintShape, await response.Content.ReadAsStringAsync());
     }
 
+    [Fact]
+    public async Task A_robot_with_a_position_but_no_instructions_is_rejected_with_a_hint()
+    {
+        var response = await PostMission("5 3\n1 1 E\nRFRF\n3 2 N\n");
+
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        Assert.Contains("3 2 N", await response.Content.ReadAsStringAsync());
+    }
+
     private Task<HttpResponseMessage> PostMission(string missionText) =>
         api.CreateClient().PostAsync("/missions", new StringContent(missionText));
 }

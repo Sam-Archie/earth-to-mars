@@ -25,7 +25,14 @@ app.MapPost("/missions", async (HttpRequest request) =>
             return Results.Text(startPositionRead.Hint, statusCode: StatusCodes.Status400BadRequest);
         }
 
-        var instructionsRead = LineReaders.ReadInstructions(robotLines[1]);
+        if (robotLines is not [_, var instructionsLine])
+        {
+            return Results.Text(
+                $"Robot at `{startPosition}` landed without instructions. Each robot is two lines: a position like `1 1 E`, then instructions like `RFRF`.",
+                statusCode: StatusCodes.Status400BadRequest);
+        }
+
+        var instructionsRead = LineReaders.ReadInstructions(instructionsLine);
         if (instructionsRead.Value is not { } instructions)
         {
             return Results.Text(instructionsRead.Hint, statusCode: StatusCodes.Status400BadRequest);
