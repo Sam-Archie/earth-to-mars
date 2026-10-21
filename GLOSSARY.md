@@ -9,7 +9,7 @@ One transmission from Earth: a grid and the robots sent to it, run one after ano
 _Avoid_: Session, game
 
 **Scent**:
-A marker left by a lost robot on the last square it occupied, recording the edge it fell over. A scent guards only that edge of that square.
+A marker left by a lost robot on the last square it occupied. A scented square stops any later robot from moving off the grid from it, over any edge.
 _Avoid_: Mark, flag, warning
 
 **Lost robot**:
