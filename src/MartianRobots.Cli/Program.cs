@@ -1,8 +1,9 @@
 using MartianRobots;
 using MartianRobots.Cli;
+using Microsoft.Extensions.Logging;
 
 using var missionLogger = new MissionFileLogger();
-var mars = AskUntilRead("Earth to Mars, come in. How big is Mars? Send its upper-right square, like `5 3`.", LineReaders.ReadMars);
+var mars = AskUntilRead("Earth to Mars, come in. How big is Mars? Send its upper-right square, like `5 3`.", LineReaders.ReadMars, missionLogger);
 if (mars is null)
 {
     return;
@@ -13,13 +14,13 @@ while (true)
 {
     var robotNumber = mission.NextRobotNumber;
     var startPosition = AskUntilRead($"Robot {robotNumber}, where do you land? Send a square and an orientation, like `1 1 E`.",
-        line => LineReaders.ReadPosition(line, mars));
+        line => LineReaders.ReadPosition(line, mars), missionLogger);
     if (startPosition is null)
     {
         return;
     }
 
-    var instructions = AskUntilRead($"Robot {robotNumber}, standing by for instructions, like `RFRF`.", LineReaders.ReadInstructions);
+    var instructions = AskUntilRead($"Robot {robotNumber}, standing by for instructions, like `RFRF`.", LineReaders.ReadInstructions, missionLogger);
     if (instructions is null)
     {
         Console.Error.WriteLine($"Signal lost before robot {robotNumber} at {startPosition} got its instructions. It stays in the hangar.");
@@ -52,7 +53,7 @@ static void Announce(int robotNumber, RobotReport report)
 }
 
 // Prompts and hints go to stderr so stdout carries only the brief's result lines. Null means Earth stopped transmitting.
-static T? AskUntilRead<T>(string prompt, Func<string, LineRead<T>> readLine) where T : class
+static T? AskUntilRead<T>(string prompt, Func<string, LineRead<T>> readLine, ILogger missionLogger) where T : class
 {
     while (true)
     {
@@ -62,6 +63,7 @@ static T? AskUntilRead<T>(string prompt, Func<string, LineRead<T>> readLine) whe
             return null;
         }
 
+        missionLogger.LogLineReceived(line);
         var attempt = readLine(line);
         if (attempt.Value is { } value)
         {

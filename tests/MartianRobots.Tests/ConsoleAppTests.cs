@@ -78,13 +78,34 @@ public partial class ConsoleAppTests
         }
     }
 
+    [Fact]
+    public async Task Every_line_Earth_sends_is_logged_with_its_time_bad_lines_included()
+    {
+        var run = await RunConsoleApp("5 X\n5 3\n9 9 N\n");
+
+        Assert.Equal(["< 5 X", "< 5 3", "< 9 9 N"], run.MissionLogEntries);
+    }
+
     [GeneratedRegex(@"^--- Mission started \d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2} ---$")]
     private static partial Regex MissionHeader();
+
+    [GeneratedRegex(@"^\d{2}:\d{2}:\d{2} ")]
+    private static partial Regex EntryTime();
 
     private static string[] ReadMissionLogLines(DirectoryInfo workingDirectory) =>
         File.ReadAllLines(Path.Combine(workingDirectory.FullName, "logs", "missions.txt"));
 
-    private sealed record ConsoleRun(string Stdout, string Stderr, int ExitCode);
+    // The latest mission's lines follow its header. Each must start with its time; the entry is what follows it.
+    private static string[] ReadMissionLogEntries(DirectoryInfo workingDirectory)
+    {
+        var missionLogLines = ReadMissionLogLines(workingDirectory);
+        var latestHeaderIndex = Array.FindLastIndex(missionLogLines, line => MissionHeader().IsMatch(line));
+        var entryLines = missionLogLines[(latestHeaderIndex + 1)..];
+        Assert.All(entryLines, line => Assert.Matches(EntryTime(), line));
+        return entryLines.Select(line => EntryTime().Replace(line, "")).ToArray();
+    }
+
+    private sealed record ConsoleRun(string Stdout, string Stderr, int ExitCode, string[] MissionLogEntries);
 
     private static async Task<ConsoleRun> RunConsoleApp(string stdin)
     {
@@ -107,7 +128,8 @@ public partial class ConsoleAppTests
         await process.StandardInput.WriteAsync(stdin);
         process.StandardInput.Close();
         await process.WaitForExitAsync();
-        return new ConsoleRun((await stdout).ReplaceLineEndings("\n"), await stderr, process.ExitCode);
+        return new ConsoleRun((await stdout).ReplaceLineEndings("\n"), await stderr, process.ExitCode,
+            ReadMissionLogEntries(workingDirectory));
     }
 
     private static Process StartConsoleAppIn(DirectoryInfo workingDirectory)
