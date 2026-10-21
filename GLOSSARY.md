@@ -40,6 +40,14 @@ _Avoid_: Park, stake, mark
 A square that holds a claim. Other robots may pass through or finish on it, but cannot claim it again.
 _Avoid_: Parked, occupied, taken
 
+**Unknown region**:
+A square no robot has claimed yet, as Earth sees it.
+_Avoid_: Empty square, unexplored, blank
+
+**Mission map**:
+Earth's picture of Mars during a mission: its claims, scents and unknown regions, with north at the top.
+_Avoid_: Grid, board, world view
+
 **Command**:
 One letter's action on a robot: turn left (`L`), turn right (`R`) or move forward (`F`). New command types may be added later.
 _Avoid_: Instruction (for a single letter), move, action
