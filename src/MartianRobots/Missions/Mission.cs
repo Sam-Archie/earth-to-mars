@@ -6,7 +6,7 @@ using MartianRobots.Map;
 
 namespace MartianRobots.Missions;
 
-public sealed class Mission(Mars mars)
+public sealed class Mission(IPlanet planet)
 {
     private readonly Scents _scents = new();
     private readonly Claims _claims = new();
@@ -21,7 +21,7 @@ public sealed class Mission(Mars mars)
         foreach (var command in instructions.Commands)
         {
             var proposed = command.Propose(position);
-            if (mars.Contains(proposed.Square))
+            if (planet.Contains(proposed.Square))
             {
                 position = proposed;
             }
@@ -33,9 +33,9 @@ public sealed class Mission(Mars mars)
         }
 
         var claimOutcome = _claims.Claim(position.Square, robotNumber);
-        var marsIsFullyClaimed = claimOutcome == ClaimOutcome.Claimed && _claims.Count == mars.SquareCount;
-        return new RobotReport(position, Lost: false, claimOutcome, marsIsFullyClaimed);
+        var planetIsFullyClaimed = claimOutcome == ClaimOutcome.Claimed && _claims.Count == planet.SquareCount;
+        return new RobotReport(position, Lost: false, claimOutcome, planetIsFullyClaimed);
     }
 
-    public string RenderMap() => MissionMap.Render(mars, _claims.ClaimingRobotNumbers, _scents.ScentedSquares);
+    public string RenderMap() => MissionMap.Render(planet, _claims.ClaimingRobotNumbers, _scents.ScentedSquares);
 }

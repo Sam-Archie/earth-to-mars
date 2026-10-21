@@ -2,9 +2,9 @@ using MartianRobots.Domain.Positions;
 
 namespace MartianRobots.Domain.Planets;
 
-public sealed record Mars(Square UpperRight)
+public sealed record Mars(Square UpperRight) : IPlanet
 {
-    internal int SquareCount => (UpperRight.X + 1) * (UpperRight.Y + 1);
+    public int SquareCount => (UpperRight.X + 1) * (UpperRight.Y + 1);
 
     public bool Contains(Square square) =>
         square.X >= 0 && square.Y >= 0 && square.X <= UpperRight.X && square.Y <= UpperRight.Y;

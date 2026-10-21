@@ -31,7 +31,7 @@ public static class LineReaders
         return LineRead<Mars>.Parsed(new Mars(upperRight));
     }
 
-    public static LineRead<Position> ReadPosition(string line, Mars mars)
+    public static LineRead<Position> ReadPosition(string line, IPlanet planet)
     {
         var values = SplitIntoValues(line);
         if (values is not [var startX, var startY, var orientationLetter] || ReadSquare(startX, startY) is not { } startSquare)
@@ -39,9 +39,9 @@ public static class LineReaders
             return LineRead<Position>.Bad("Garbled position. Send a square and an orientation, like `1 1 E`.");
         }
 
-        if (!mars.Contains(startSquare))
+        if (!planet.Contains(startSquare))
         {
-            return LineRead<Position>.Bad($"That square is off the map. Robots start between `0 0` and `{mars.UpperRight}`.");
+            return LineRead<Position>.Bad($"That square is off the map. Robots start between `0 0` and `{planet.UpperRight}`.");
         }
 
         if (!OrientationsByLetter.TryGetValue(orientationLetter, out var orientation))

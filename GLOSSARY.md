@@ -4,8 +4,12 @@ Robots move across Mars, a bounded rectangle of squares, following instructions 
 
 ## Language
 
+**Planet**:
+A bounded rectangle of squares robots can be sent to, from `0 0` to its upper-right square. Mars is the only one built.
+_Avoid_: World, grid
+
 **Mars**:
-The bounded rectangle of squares the robots move on, from `0 0` to the upper-right corner Earth names. It holds nothing but its size.
+The planet the robots move on: a bounded rectangle of squares from `0 0` to the upper-right corner Earth names. It holds nothing but its size.
 _Avoid_: Grid, world, board, plateau
 
 **Square**:

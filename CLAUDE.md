@@ -8,7 +8,7 @@ The brief is `docs/brief.md` (source of truth for the problem). `README.md` is t
 - Layout: one `.slnx` solution at the root (the .NET 10 default format); `src/MartianRobots` (core), `src/MartianRobots.Cli` (console adapter), `src/MartianRobots.Api` (HTTP adapter), `tests/MartianRobots.Tests`.
 - Shape: the core is a class library with no `Console` and no ASP.NET reference, exposing parse → simulate → format. The console app is a separate, thin adapter (read stdin, call the core, write stdout). The API is a second thin adapter: one `POST /missions` route, each request its own mission, no CORS, auth or stubs. Tests target the core directly, plus one end-to-end test that runs the brief's sample through the CLI and one through the API.
 - Scope: the program, its minimal API and their tests. No UI, database or pipeline is built; the README describes what would come next.
-- Simplicity: this is a two-to-three-hour piece of work and the brief asks for "as simple as possible". No layered architecture. One deliberate seam for future command types; everything else plain.
+- Simplicity: this is a two-to-three-hour piece of work and the brief asks for "as simple as possible". No layered architecture. Two deliberate seams: future command types (the brief asks for them) and planets (`IPlanet`, our addition to show extensibility); everything else plain.
 - Every call made where the brief leaves something open is recorded as an assumption in the README.
 
 ## Code
