@@ -1,5 +1,5 @@
 ---
-status: accepted (provisional)
+status: superseded by ADR-0002
 ---
 
 # Commands get their own folder before the core needs one
