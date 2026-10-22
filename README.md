@@ -4,7 +4,15 @@ A solution to TDL's Martian Robots challenge (the brief is in [`docs/brief.md`](
 
 ## How to run it
 
-You need the [.NET 10 SDK](https://dotnet.microsoft.com/download/dotnet/10.0) and nothing else. Run every command from the repo root.
+You need the [.NET 10 SDK](https://dotnet.microsoft.com/download/dotnet/10.0) and nothing else; it includes the C# compiler. Run every command from the repo root.
+
+To install it:
+
+- **macOS** (Homebrew): `brew install --cask dotnet-sdk`
+- **Windows** (winget): `winget install Microsoft.DotNet.SDK.10`
+- **Linux**: follow the [install guide](https://learn.microsoft.com/dotnet/core/install/linux) for your distribution.
+
+From the repo root, `dotnet --version` should then print something like `10.0.401`. The Homebrew cask always installs the newest SDK, and the repo's `global.json` only accepts a 10.0 SDK, so once the cask moves past .NET 10, use the download link above instead.
 
 **The brief's sample, through the console app** (bash or zsh):
 
