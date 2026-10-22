@@ -52,7 +52,7 @@ The reply is the same three result lines. Port 5050 is only a suggestion: the AP
 dotnet test
 ```
 
-This runs all 60 tests, including one that pipes the sample through the console app and one that POSTs it to the API.
+This runs all the tests, including one that pipes the sample through the console app and one that POSTs it to the API.
 
 ## What it does
 
