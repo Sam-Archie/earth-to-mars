@@ -65,7 +65,10 @@ On top of the brief, the console app adds a few things that change no rule and n
     0 1 2 3 4 5
   ```
 
-- **Colour at a terminal.** On stdout, a result line is green, or red when the robot is lost. On stderr, prompts are cyan; hints and the "stays in the hangar" note are yellow; lost in space is red, claimed green, already claimed yellow and Mission complete magenta; scents are red on the map. Each stream is coloured only when it goes to a terminal, so piped or redirected output stays exactly the brief's text.
+- **Colour at a terminal.** On stdout, a result line is green, or red when the robot is lost. On stderr, prompts are cyan; hints and the "stays in the hangar" note are yellow; lost in space is red, claimed green, already claimed yellow and Mission complete magenta; scents are red on the map. Each stream is coloured only when it goes to a terminal, so piped or redirected output stays exactly the brief's text. The brief's sample at a terminal (`dotnet run --project src/MartianRobots.Cli < samples/brief-sample.txt`); the green and red result lines are stdout, everything else is stderr:
+
+  ![The brief's sample run at a terminal: cyan prompts, green and red result lines, and the mission map after each robot with the scent in red](docs/images/console-sample.png)
+
 - **Hints, not crashes.** A bad line gets a hint naming the expected shape, and the same line is asked for again. For example, `1 1 Q` gets "The robot's compass is spinning. Face it N, E, S or W, like `1 1 E`."
 - **A mission log.** Every line in and every result line out is appended, with a time, to `logs/missions.txt` under the directory the app runs from. It is write-only and gitignored.
 
