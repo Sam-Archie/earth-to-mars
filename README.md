@@ -6,13 +6,23 @@ A solution to TDL's Martian Robots challenge (the brief is in [`docs/brief.md`](
 
 You need the [.NET 10 SDK](https://dotnet.microsoft.com/download/dotnet/10.0) and nothing else; it includes the C# compiler. Run every command from the repo root.
 
-To install it:
+To install it, pick one:
 
-- **macOS** (Homebrew): `brew install --cask dotnet-sdk`
-- **Windows** (winget): `winget install Microsoft.DotNet.SDK.10`
-- **Linux**: follow the [install guide](https://learn.microsoft.com/dotnet/core/install/linux) for your distribution.
+- **The installer** (macOS, Windows): download it from the link above and run it.
+- **Microsoft's install script** (macOS, Linux; no package manager or admin rights needed). It installs into `~/.dotnet`, which then goes on your `PATH`:
 
-From the repo root, `dotnet --version` should then print something like `10.0.401`. The Homebrew cask always installs the newest SDK, and the repo's `global.json` only accepts a 10.0 SDK, so once the cask moves past .NET 10, use the download link above instead.
+  ```sh
+  curl -sSL -o dotnet-install.sh https://dot.net/v1/dotnet-install.sh
+  bash dotnet-install.sh --channel 10.0
+  export PATH="$HOME/.dotnet:$PATH"
+  ```
+
+  On Windows, the PowerShell equivalent is `dotnet-install.ps1 -Channel 10.0` from `https://dot.net/v1/dotnet-install.ps1`.
+- **Homebrew** (macOS): `brew install --cask dotnet-sdk`
+- **winget** (Windows): `winget install Microsoft.DotNet.SDK.10`
+- **Your distribution's package manager** (Linux): see the [install guide](https://learn.microsoft.com/dotnet/core/install/linux).
+
+From the repo root, `dotnet --version` should then print something like `10.0.401`. The Homebrew cask always installs the newest SDK, and the repo's `global.json` only accepts a 10.0 SDK, so once the cask moves past .NET 10, use one of the other ways instead.
 
 **The brief's sample, through the console app** (bash or zsh):
 
