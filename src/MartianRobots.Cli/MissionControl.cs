@@ -17,6 +17,7 @@ public static class MissionControl
         }
 
         var mission = new Mission(mars);
+        // No robot count to loop to: the brief's input has none, so robots keep coming until Earth stops transmitting.
         while (earthLink.AskForRobot(mission.NextRobotNumber, mars) is { } robot)
         {
             var report = mission.Send(robot.StartPosition, robot.Instructions);
