@@ -11,17 +11,22 @@ public static class RobotAnnouncements
         var square = report.Final.Square;
         if (report.Lost)
         {
-            Console.Error.WriteLine($"Robot {robotNumber} is lost in space, last seen at {square}. It leaves a scent so no one else follows.");
+            Highlight.Message($"Robot {robotNumber} is lost in space, last seen at {square}. It leaves a scent so no one else follows.", Colour.Red);
             return;
         }
 
-        Console.Error.WriteLine(report.Claim == ClaimOutcome.Claimed
-            ? $"Robot {robotNumber} claims {square} for Earth. Earth applauds politely."
-            : $"Robot {robotNumber} reaches {square}, but it is already claimed. Awkward. It pretends it was just passing.");
+        if (report.Claim == ClaimOutcome.Claimed)
+        {
+            Highlight.Message($"Robot {robotNumber} claims {square} for Earth. Earth applauds politely.", Colour.Green);
+        }
+        else
+        {
+            Highlight.Message($"Robot {robotNumber} reaches {square}, but it is already claimed. Awkward. It pretends it was just passing.", Colour.Yellow);
+        }
 
         if (report.CompletedMission)
         {
-            Console.Error.WriteLine("Mission complete! Every square on Mars is claimed. Earth breaks out the space biscuits.");
+            Highlight.Message("Mission complete! Every square on Mars is claimed. Earth breaks out the space biscuits.", Colour.Magenta);
         }
     }
 }

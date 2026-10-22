@@ -8,7 +8,6 @@ internal static class MissionMap
 {
     // Earth knows nothing about an unknown region, so the map leaves it blank and only claims and scents stand out.
     private const string UnknownRegion = " ";
-    private const string Scent = "*";
 
     public static string Render(IPlanet planet, IReadOnlyDictionary<Square, int> claimingRobotNumbers, IReadOnlySet<Square> scents)
     {
@@ -39,6 +38,6 @@ internal static class MissionMap
             return robotNumber.ToString();
         }
 
-        return scents.Contains(square) ? Scent : UnknownRegion;
+        return scents.Contains(square) ? MapSymbols.Scent : UnknownRegion;
     }
 }

@@ -26,7 +26,7 @@ public sealed class EarthLink(ILogger missionLogger)
         var instructions = AskUntilRead($"Robot {robotNumber}, standing by for instructions, like `RFRF`.", LineReaders.ReadInstructions);
         if (instructions is null)
         {
-            Console.Error.WriteLine($"Signal lost before robot {robotNumber} at {startPosition} got its instructions. It stays in the hangar.");
+            Highlight.Message($"Signal lost before robot {robotNumber} at {startPosition} got its instructions. It stays in the hangar.", Colour.Yellow);
             return null;
         }
 
@@ -37,7 +37,7 @@ public sealed class EarthLink(ILogger missionLogger)
     {
         while (true)
         {
-            Console.Error.WriteLine(prompt);
+            Highlight.Message(prompt, Colour.Cyan);
             if (Console.ReadLine() is not { } line)
             {
                 return null;
@@ -50,7 +50,7 @@ public sealed class EarthLink(ILogger missionLogger)
                 return value;
             }
 
-            Console.Error.WriteLine(attempt.Hint);
+            Highlight.Message(attempt.Hint!, Colour.Yellow);
         }
     }
 }

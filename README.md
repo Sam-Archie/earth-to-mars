@@ -50,7 +50,7 @@ This runs all 60 tests, including one that pipes the sample through the console 
 
 The console app is the main deliverable. Earth types or pipes in the brief's input, and stdout carries the brief's output, one result line per robot.
 
-On top of the brief, the console app adds a few things that change no rule and never touch stdout:
+On top of the brief, the console app adds a few things that change no rule and never change what stdout carries when it is piped or redirected:
 
 - **Claims.** A robot that finishes its instructions on Mars claims its square for Earth. Each square can be claimed once. When the last unclaimed square is claimed, stderr announces **Mission complete**.
 - **The mission map.** After every robot, stderr shows Earth's view of Mars: the claiming robot's number on a claimed square and `*` for a scent. Every other square is an unknown region (one Earth knows nothing about) and is left blank, so only what Earth knows shows up. After the brief's sample:
@@ -65,6 +65,7 @@ On top of the brief, the console app adds a few things that change no rule and n
     0 1 2 3 4 5
   ```
 
+- **Colour at a terminal.** On stdout, a result line is green, or red when the robot is lost. On stderr, prompts are cyan; hints and the "stays in the hangar" note are yellow; lost in space is red, claimed green, already claimed yellow and Mission complete magenta; scents are red on the map. Each stream is coloured only when it goes to a terminal, so piped or redirected output stays exactly the brief's text.
 - **Hints, not crashes.** A bad line gets a hint naming the expected shape, and the same line is asked for again. For example, `1 1 Q` gets "The robot's compass is spinning. Face it N, E, S or W, like `1 1 E`."
 - **A mission log.** Every line in and every result line out is appended, with a time, to `logs/missions.txt` under the directory the app runs from. It is write-only and gitignored.
 
@@ -117,7 +118,7 @@ Where the brief leaves something open, these are the calls made.
 - A robot must start on Mars.
 - Instructions must be fewer than 100 letters ("less than 100", as the brief says), and every letter must be a known command.
 - There is no robot count line; a mission has as many robots as Earth sends.
-- The run commands are for bash or zsh only, since the brief names no OS. On Windows, they should work unchanged from Git Bash or WSL (not tested).
+- The run commands are for bash or zsh only, since the brief names no OS. On Windows, they should work unchanged from Git Bash or WSL (not tested). The console's colours use standard terminal codes; an older Windows console that doesn't understand them may print them as raw text, while Windows Terminal shows them.
 
 **The console app**
 

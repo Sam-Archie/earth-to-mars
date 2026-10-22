@@ -20,10 +20,10 @@ public static class MissionControl
         while (earthLink.AskForRobot(mission.NextRobotNumber, mars) is { } robot)
         {
             var report = mission.Send(robot.StartPosition, robot.Instructions);
-            Console.WriteLine(report.ResultLine);
+            Highlight.Result(report.ResultLine, report.Lost ? Colour.Red : Colour.Green);
             missionLogger.LogResultSent(report.ResultLine);
             RobotAnnouncements.Announce(robot.Number, report);
-            Console.Error.WriteLine(mission.RenderMap());
+            Highlight.Map(mission.RenderMap());
         }
     }
 }
