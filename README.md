@@ -61,6 +61,25 @@ Planned in GitHub Issues before any code was written, then built with Claude Cod
 | 3. Split it into build tickets | `to-tickets` | [#10](https://github.com/Sam-Archie/earth-to-mars/issues/10)–[#16](https://github.com/Sam-Archie/earth-to-mars/issues/16) |
 | 4. Build one ticket per session, test-first | `implement`, `tdd`, `code-review` | |
 
+Each decision's reasoning is on its ticket:
+
+- [#1](https://github.com/Sam-Archie/earth-to-mars/issues/1) Martian Robots: the way to a buildable spec
+  - [#2](https://github.com/Sam-Archie/earth-to-mars/issues/2) How do we record AI usage as we go?
+  - [#3](https://github.com/Sam-Archie/earth-to-mars/issues/3) Which simulation rules does the brief leave open, and what do we decide?
+  - [#4](https://github.com/Sam-Archie/earth-to-mars/issues/4) How do new instruction types plug in, and what are the domain terms?
+  - [#5](https://github.com/Sam-Archie/earth-to-mars/issues/5) What is the console input/output contract?
+  - [#6](https://github.com/Sam-Archie/earth-to-mars/issues/6) Do we build a run log or only describe one?
+  - [#7](https://github.com/Sam-Archie/earth-to-mars/issues/7) What would we build around the program?
+  - [#8](https://github.com/Sam-Archie/earth-to-mars/issues/8) How do we show the map of the world?
+- [#9](https://github.com/Sam-Archie/earth-to-mars/issues/9) Martian Robots: console app, minimal API and mission map
+  - [#10](https://github.com/Sam-Archie/earth-to-mars/issues/10) Run the brief's sample end to end through the console app
+  - [#11](https://github.com/Sam-Archie/earth-to-mars/issues/11) Re-ask bad lines with a hint
+  - [#12](https://github.com/Sam-Archie/earth-to-mars/issues/12) Claim squares and announce Mission complete
+  - [#13](https://github.com/Sam-Archie/earth-to-mars/issues/13) Show the mission map on stderr after every robot
+  - [#14](https://github.com/Sam-Archie/earth-to-mars/issues/14) Keep a mission log of every line in and out
+  - [#15](https://github.com/Sam-Archie/earth-to-mars/issues/15) Run missions over POST /missions
+  - [#16](https://github.com/Sam-Archie/earth-to-mars/issues/16) Write the README
+
 - **Claude** recommended an answer to every planning question, wrote the code and tests, reviewed its changes and drafted this README. Its commits end with a `Co-Authored-By: Claude` line in [`git log`](https://github.com/Sam-Archie/earth-to-mars/commits/main).
 - **By hand:** every decision, the tests' expected values (worked out from the brief), and reviewing every change before it was committed.
 
