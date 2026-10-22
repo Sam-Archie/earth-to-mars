@@ -52,48 +52,17 @@ This runs all the tests, including one that pipes the sample through the console
 
 ## How it was approached, and how AI was used
 
-**Planned in GitHub Issues before any code was written, then built with Claude Code.** Every decision, the spec and every build ticket is a closed issue: **[see all closed issues](https://github.com/Sam-Archie/earth-to-mars/issues?q=is%3Aissue+is%3Aclosed)**.
+Planned in GitHub Issues before any code was written, then built with Claude Code using [Matt Pocock's skills](https://github.com/mattpocock/skills) (saved instructions for one kind of task, such as `grilling` the human about a decision). **[See all closed issues](https://github.com/Sam-Archie/earth-to-mars/issues?q=is%3Aissue+is%3Aclosed).**
 
-Claude Code ran [Matt Pocock's skills](https://github.com/mattpocock/skills), installed locally and not committed. A skill is a saved set of instructions for one kind of task, such as interviewing the human about a decision (`grilling`) or building test-first (`tdd`). They were used in this order:
-
-| Step | Skills | What came out |
+| Step | Skills | Issues |
 | --- | --- | --- |
-| 1. Chart the open decisions | `wayfinder`, with `grilling` and `domain-modeling` | [#1](https://github.com/Sam-Archie/earth-to-mars/issues/1) The map, with one ticket per decision ([#2](https://github.com/Sam-Archie/earth-to-mars/issues/2)–[#8](https://github.com/Sam-Archie/earth-to-mars/issues/8)), and [`GLOSSARY.md`](GLOSSARY.md) |
-| 2. Write one spec | `to-spec` | [#9](https://github.com/Sam-Archie/earth-to-mars/issues/9) The spec |
-| 3. Split it into build tickets | `to-tickets` | [#10](https://github.com/Sam-Archie/earth-to-mars/issues/10)–[#16](https://github.com/Sam-Archie/earth-to-mars/issues/16): the first got the brief's sample running end to end, and each later one added one feature on top |
-| 4. Build one ticket per session | `implement`, `tdd`, and `code-review` to check the work against the standards and the spec | The code, the tests and this README |
-| 5. Review after the tickets | `grilling`, `domain-modeling`, `retro` | The core regrouped (recorded in [ADR 0002](docs/adr/0002-domain-and-process-folders-in-one-core.md), an architecture decision record), and a Claude Code hook that stops Claude committing when the format check or the tests fail |
+| 1. Settle the open decisions | `wayfinder`, `grilling`, `domain-modeling` | [The map](https://github.com/Sam-Archie/earth-to-mars/issues/1) and its tickets [#2](https://github.com/Sam-Archie/earth-to-mars/issues/2)–[#8](https://github.com/Sam-Archie/earth-to-mars/issues/8) |
+| 2. Write one spec | `to-spec` | [#9](https://github.com/Sam-Archie/earth-to-mars/issues/9) |
+| 3. Split it into build tickets | `to-tickets` | [#10](https://github.com/Sam-Archie/earth-to-mars/issues/10)–[#16](https://github.com/Sam-Archie/earth-to-mars/issues/16) |
+| 4. Build one ticket per session, test-first | `implement`, `tdd`, `code-review` | |
 
-Each decision's reasoning is on its ticket:
-
-- [#1](https://github.com/Sam-Archie/earth-to-mars/issues/1) Martian Robots: the way to a buildable spec
-  - [#2](https://github.com/Sam-Archie/earth-to-mars/issues/2) How do we record AI usage as we go?
-  - [#3](https://github.com/Sam-Archie/earth-to-mars/issues/3) Which simulation rules does the brief leave open, and what do we decide?
-  - [#4](https://github.com/Sam-Archie/earth-to-mars/issues/4) How do new instruction types plug in, and what are the domain terms?
-  - [#5](https://github.com/Sam-Archie/earth-to-mars/issues/5) What is the console input/output contract?
-  - [#6](https://github.com/Sam-Archie/earth-to-mars/issues/6) Do we build a run log or only describe one?
-  - [#7](https://github.com/Sam-Archie/earth-to-mars/issues/7) What would we build around the program?
-  - [#8](https://github.com/Sam-Archie/earth-to-mars/issues/8) How do we show the map of the world?
-- [#9](https://github.com/Sam-Archie/earth-to-mars/issues/9) Martian Robots: console app, minimal API and mission map
-  - [#10](https://github.com/Sam-Archie/earth-to-mars/issues/10) Run the brief's sample end to end through the console app
-  - [#11](https://github.com/Sam-Archie/earth-to-mars/issues/11) Re-ask bad lines with a hint
-  - [#12](https://github.com/Sam-Archie/earth-to-mars/issues/12) Claim squares and announce Mission complete
-  - [#13](https://github.com/Sam-Archie/earth-to-mars/issues/13) Show the mission map on stderr after every robot
-  - [#14](https://github.com/Sam-Archie/earth-to-mars/issues/14) Keep a mission log of every line in and out
-  - [#15](https://github.com/Sam-Archie/earth-to-mars/issues/15) Run missions over POST /missions
-  - [#16](https://github.com/Sam-Archie/earth-to-mars/issues/16) Write the README
-
-Some decisions were reversed along the way, and the amendments are kept: an early plan failed the whole mission on bad input and stopped running robots at Mission complete, and both were dropped because the brief wants a result line for every robot.
-
-**Test-first, small commits.** Each test was seen failing before the code that passes it. Each commit holds one behaviour or one decision, so [`git log`](https://github.com/Sam-Archie/earth-to-mars/commits/main) reads as the build story. Every AI-assisted commit ends with a `Co-Authored-By: Claude` line.
-
-**What Claude did:** proposed a recommended answer for every planning question, wrote the code and tests test-first, reviewed its own changes, and drafted this README.
-
-**What was done by hand:**
-
-- Every planning decision. Claude recommended; the human decided.
-- Test expected values, worked out from the brief rather than from the code under test.
-- Reviewing every change before it was committed, and editing this README.
+- **Claude** recommended an answer to every planning question, wrote the code and tests, reviewed its changes and drafted this README. Its commits end with a `Co-Authored-By: Claude` line in [`git log`](https://github.com/Sam-Archie/earth-to-mars/commits/main).
+- **By hand:** every decision, the tests' expected values (worked out from the brief), and reviewing every change before it was committed.
 
 ## What it does
 
