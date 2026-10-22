@@ -1,6 +1,6 @@
 # earth-to-mars
 
-A solution to TDL's Martian Robots challenge (the brief is in [`docs/brief.md`](docs/brief.md)). Earth sends robots to Mars, a bounded rectangle of squares, and the program reports where each one ends up. It is a .NET 10 console app, with a small HTTP API over the same core.
+A solution to TDL's Martian Robots challenge (the brief is in [`docs/brief.md`](docs/brief.md)). Earth sends robots to Mars, a bounded rectangle of squares, and the program reports where each one ends up. It is a .NET 10 console app.
 
 ## How to run it
 
@@ -42,31 +42,17 @@ Prompts, Earth-to-Mars messages and a map of Mars after each robot go to stderr,
 
 **Typing a mission by hand:** run `dotnet run --project src/MartianRobots.Cli` and answer the prompts: Mars's size first, then two lines per robot. Each robot runs as soon as its two lines are in. Ctrl+D ends the mission.
 
-**The API:**
-
-```sh
-dotnet run --project src/MartianRobots.Api -- --urls http://localhost:5050
-```
-
-Then, in a second terminal:
-
-```sh
-curl --data-binary @samples/brief-sample.txt http://localhost:5050/missions
-```
-
-The reply is the same three result lines. Port 5050 is only a suggestion: the API's default, 5000, is taken by AirPlay Receiver on recent macOS.
-
 **The tests:**
 
 ```sh
 dotnet test
 ```
 
-This runs all the tests, including one that pipes the sample through the console app and one that POSTs it to the API.
+This runs all the tests, including one that pipes the sample through the console app.
 
 ## What it does
 
-The console app is the main deliverable. Earth types or pipes in the brief's input, and stdout carries the brief's output, one result line per robot.
+The console app is the deliverable. Earth types or pipes in the brief's input, and stdout carries the brief's output, one result line per robot.
 
 On top of the brief, the console app adds a few things that change no rule and never change what stdout carries when it is piped or redirected:
 
@@ -95,10 +81,9 @@ The domain words used here and in the code (Mars, square, position, scent, claim
 ## Technical choices
 
 - **.NET 10 and xunit**, pinned in `global.json`. One `dotnet test` from the root runs everything, with no other setup.
-- **A core library and two thin adapters.** `src/MartianRobots` holds the rules and knows nothing about consoles or HTTP. `src/MartianRobots.Cli` reads stdin and writes stdout and stderr. `src/MartianRobots.Api` is one `POST /missions` route. Both adapters use the same core, so a rule is written once. Inside the core, `Domain/` holds the things and the rules (planets, positions, commands, scents, claims), and one folder per process sits beside it: `Missions/` runs robots, `Input/` reads Earth's lines, and `Map/` draws the mission map. [ADR 0002](docs/adr/0002-domain-and-process-folders-in-one-core.md) (an architecture decision record) explains how the core is grouped, and why it isn't split into layers.
+- **A core library and a thin console app.** `src/MartianRobots` holds the rules and knows nothing about consoles or HTTP. `src/MartianRobots.Cli` reads stdin and writes stdout and stderr. `src/MartianRobots.Api` is a working first step towards what would come next (see [below](#what-would-be-built-next)). Inside the core, `Domain/` holds the things and the rules (planets, positions, commands, scents, claims), and one folder per process sits beside it: `Missions/` runs robots, `Input/` reads Earth's lines, and `Map/` draws the mission map. [ADR 0002](docs/adr/0002-domain-and-process-folders-in-one-core.md) (an architecture decision record) explains how the core is grouped, and why it isn't split into layers.
 - **The core's public surface is small.** There are three line readers (Mars's size, a robot's starting position, its instructions), each returning either the value or a hint. Then a `Mission` that you send robots to, one at a time, which returns a report: the result line, whether the robot was lost, and what it claimed. The tests go through this surface only.
 - **An extension point for new command types,** because the brief asks for provision for them. Each command letter (`L`, `R`, `F`) is a small class that proposes the robot's next position, looked up in one letter → command table. The mission, not the command, decides what happens at the edge: it accepts the move, ignores it from a scented square, or loses the robot. So adding a command is one class and one table entry, and a new movement command such as a `B` (back) gets the edge and scent rules for free.
-- **An API, though the brief rules out a web application.** It is one route with no UI, and it exists to show the core plugs into a second adapter unchanged. Nothing is stubbed, and there is no CORS, auth or OpenAPI.
 - **An extension point for planets, which the brief doesn't ask for.** `Mars` implements `IPlanet` (its upper-right square, how many squares it has, and whether a square is on it), and the mission, the map and the position reader take any planet. It is there to show extensibility. The map title and the console's messages still say Mars.
 - **Nothing else is layered.** The brief asks for "as simple as possible", so there are no repositories, services or dependency-injection setup in the core.
 - **stdout is exactly the brief's output.** Everything for a human reader goes to stderr, whether the input is typed or piped. Output can be compared byte for byte, and `2>/dev/null` gives the bare results without a command-line option.
@@ -149,14 +134,19 @@ Where the brief leaves something open, these are the calls made.
 - The app exits 0 whenever input ends, bad lines included. Only a genuine crash exits non-zero.
 - The mission log is always on; there is no option to turn it off. It is written as each line happens, so a mission cut short still leaves its record.
 
-**The API**
-
-- Each request is its own mission. Nothing carries over between requests.
-- The API cannot ask for a line again, so the first bad line rejects the whole mission with `400 Bad Request` and that line's hint as the body. No partial results are returned. A missing size line or a robot without instructions is rejected the same way. No planning ticket covered this; it was decided in the spec and is easy to change.
-- Blank lines are skipped and the rest are paired as position + instructions. A side effect: a robot with an empty instruction line can't be sent over the API, though the console accepts one.
-- The API returns result lines only: no map, no messages, and no log file.
-
 ## What would be built next
+
+A first step, putting missions behind HTTP, already works in `src/MartianRobots.Api`; ideas 1, 2 and 5 would build on it. It is one `POST /missions` route over the unchanged core: each request is its own mission and gets back result lines only. It can't ask for a line again, so the first bad line, a missing size line or a robot without instructions rejects the whole mission with `400 Bad Request` and a hint. Blank lines are skipped, so a robot with an empty instruction line can't be sent this way. There is no UI, auth or CORS, as the brief rules out a web application. To try it (on port 5050, because macOS's AirPlay Receiver takes the default 5000):
+
+```sh
+dotnet run --project src/MartianRobots.Api -- --urls http://localhost:5050
+```
+
+Then, in a second terminal:
+
+```sh
+curl --data-binary @samples/brief-sample.txt http://localhost:5050/missions
+```
 
 The program keeps nothing between missions; ideas 1, 2 and 5 would change that.
 
@@ -170,7 +160,7 @@ The program keeps nothing between missions; ideas 1, 2 and 5 would change that.
 
 Described, not built: there is no Dockerfile or pipeline here, as the brief asks.
 
-The API would be published as a container image and run on any container host. Because each request is its own mission and nothing is shared, copies scale out behind a load balancer with no coordination, and logging would use the host's normal logging rather than a text file. Saved state (ideas 1, 2 and 5) would change that: every copy would need the same database, and concurrent requests on one Mars would need a rule for who wins.
+Once missions are behind HTTP, the API would be published as a container image and run on any container host. Because each request is its own mission and nothing is shared, copies scale out behind a load balancer with no coordination, and logging would use the host's normal logging rather than a text file. Saved state (ideas 1, 2 and 5) would change that: every copy would need the same database, and concurrent requests on one Mars would need a rule for who wins.
 
 ## How AI was used, and where it wasn't
 
