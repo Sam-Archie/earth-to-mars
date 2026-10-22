@@ -1,6 +1,6 @@
 # earth-to-mars
 
-A solution to TDL's Martian Robots challenge (the brief is in [`docs/brief.md`](docs/brief.md)). Earth sends robots to Mars, a bounded rectangle of squares, and the program reports where each one ends up. It is a .NET 10 console app.
+A solution to TDL's Martian Robots challenge (the brief is in [`docs/brief.md`](docs/brief.md)). Earth sends robots to Mars, a bounded rectangle of squares, and the program reports where each one ends up. It is a .NET 10 console app, planned and built with Claude Code: see [how it was approached](#how-it-was-approached-and-how-ai-was-used) and [the closed issues](https://github.com/Sam-Archie/earth-to-mars/issues?q=is%3Aissue+is%3Aclosed).
 
 ## How to run it
 
@@ -50,6 +50,51 @@ dotnet test
 
 This runs all the tests, including one that pipes the sample through the console app.
 
+## How it was approached, and how AI was used
+
+**Planned in GitHub Issues before any code was written, then built with Claude Code.** Every decision, the spec and every build ticket is a closed issue: **[see all closed issues](https://github.com/Sam-Archie/earth-to-mars/issues?q=is%3Aissue+is%3Aclosed)**.
+
+Claude Code ran [Matt Pocock's skills](https://github.com/mattpocock/skills), installed locally and not committed. A skill is a saved set of instructions for one kind of task, such as interviewing the human about a decision (`grilling`) or building test-first (`tdd`). They were used in this order:
+
+| Step | Skills | What came out |
+| --- | --- | --- |
+| 1. Chart the open decisions | `wayfinder`, with `grilling` and `domain-modeling` | [#1](https://github.com/Sam-Archie/earth-to-mars/issues/1) The map, with one ticket per decision ([#2](https://github.com/Sam-Archie/earth-to-mars/issues/2)–[#8](https://github.com/Sam-Archie/earth-to-mars/issues/8)), and [`GLOSSARY.md`](GLOSSARY.md) |
+| 2. Write one spec | `to-spec` | [#9](https://github.com/Sam-Archie/earth-to-mars/issues/9) The spec |
+| 3. Split it into build tickets | `to-tickets` | [#10](https://github.com/Sam-Archie/earth-to-mars/issues/10)–[#16](https://github.com/Sam-Archie/earth-to-mars/issues/16): the first got the brief's sample running end to end, and each later one added one feature on top |
+| 4. Build one ticket per session | `implement`, `tdd`, and `code-review` to check the work against the standards and the spec | The code, the tests and this README |
+| 5. Review after the tickets | `grilling`, `domain-modeling`, `retro` | The core regrouped (recorded in [ADR 0002](docs/adr/0002-domain-and-process-folders-in-one-core.md), an architecture decision record), and a Claude Code hook that stops Claude committing when the format check or the tests fail |
+
+Each decision's reasoning is on its ticket:
+
+- [#1](https://github.com/Sam-Archie/earth-to-mars/issues/1) Martian Robots: the way to a buildable spec
+  - [#2](https://github.com/Sam-Archie/earth-to-mars/issues/2) How do we record AI usage as we go?
+  - [#3](https://github.com/Sam-Archie/earth-to-mars/issues/3) Which simulation rules does the brief leave open, and what do we decide?
+  - [#4](https://github.com/Sam-Archie/earth-to-mars/issues/4) How do new instruction types plug in, and what are the domain terms?
+  - [#5](https://github.com/Sam-Archie/earth-to-mars/issues/5) What is the console input/output contract?
+  - [#6](https://github.com/Sam-Archie/earth-to-mars/issues/6) Do we build a run log or only describe one?
+  - [#7](https://github.com/Sam-Archie/earth-to-mars/issues/7) What would we build around the program?
+  - [#8](https://github.com/Sam-Archie/earth-to-mars/issues/8) How do we show the map of the world?
+- [#9](https://github.com/Sam-Archie/earth-to-mars/issues/9) Martian Robots: console app, minimal API and mission map
+  - [#10](https://github.com/Sam-Archie/earth-to-mars/issues/10) Run the brief's sample end to end through the console app
+  - [#11](https://github.com/Sam-Archie/earth-to-mars/issues/11) Re-ask bad lines with a hint
+  - [#12](https://github.com/Sam-Archie/earth-to-mars/issues/12) Claim squares and announce Mission complete
+  - [#13](https://github.com/Sam-Archie/earth-to-mars/issues/13) Show the mission map on stderr after every robot
+  - [#14](https://github.com/Sam-Archie/earth-to-mars/issues/14) Keep a mission log of every line in and out
+  - [#15](https://github.com/Sam-Archie/earth-to-mars/issues/15) Run missions over POST /missions
+  - [#16](https://github.com/Sam-Archie/earth-to-mars/issues/16) Write the README
+
+Some decisions were reversed along the way, and the amendments are kept: an early plan failed the whole mission on bad input and stopped running robots at Mission complete, and both were dropped because the brief wants a result line for every robot.
+
+**Test-first, small commits.** Each test was seen failing before the code that passes it. Each commit holds one behaviour or one decision, so [`git log`](https://github.com/Sam-Archie/earth-to-mars/commits/main) reads as the build story. Every AI-assisted commit ends with a `Co-Authored-By: Claude` line.
+
+**What Claude did:** proposed a recommended answer for every planning question, wrote the code and tests test-first, reviewed its own changes, and drafted this README.
+
+**What was done by hand:**
+
+- Every planning decision. Claude recommended; the human decided.
+- Test expected values, worked out from the brief rather than from the code under test.
+- Reviewing every change before it was committed, and editing this README.
+
 ## What it does
 
 The console app is the deliverable. Earth types or pipes in the brief's input, and stdout carries the brief's output, one result line per robot.
@@ -81,18 +126,12 @@ The domain words used here and in the code (Mars, square, position, scent, claim
 ## Technical choices
 
 - **.NET 10 and xunit**, pinned in `global.json`. One `dotnet test` from the root runs everything, with no other setup.
-- **A core library and a thin console app.** `src/MartianRobots` holds the rules and knows nothing about consoles or HTTP. `src/MartianRobots.Cli` reads stdin and writes stdout and stderr. `src/MartianRobots.Api` is a working first step towards what would come next (see [below](#what-would-be-built-next)). Inside the core, `Domain/` holds the things and the rules (planets, positions, commands, scents, claims), and one folder per process sits beside it: `Missions/` runs robots, `Input/` reads Earth's lines, and `Map/` draws the mission map. [ADR 0002](docs/adr/0002-domain-and-process-folders-in-one-core.md) (an architecture decision record) explains how the core is grouped, and why it isn't split into layers.
+- **A core library and a thin console app.** `src/MartianRobots` holds the rules and knows nothing about consoles or HTTP. `src/MartianRobots.Cli` reads stdin and writes stdout and stderr. `src/MartianRobots.Api` is a working first step towards what would come next (see [below](#what-would-be-built-next)). Inside the core, `Domain/` holds the things and the rules (planets, positions, commands, scents, claims), and one folder per process sits beside it: `Missions/` runs robots, `Input/` reads Earth's lines, and `Map/` draws the mission map. [ADR 0002](docs/adr/0002-domain-and-process-folders-in-one-core.md) explains how the core is grouped, and why it isn't split into layers.
 - **The core's public surface is small.** There are three line readers (Mars's size, a robot's starting position, its instructions), each returning either the value or a hint. Then a `Mission` that you send robots to, one at a time, which returns a report: the result line, whether the robot was lost, and what it claimed. The tests go through this surface only.
 - **An extension point for new command types,** because the brief asks for provision for them. Each command letter (`L`, `R`, `F`) is a small class that proposes the robot's next position, looked up in one letter → command table. The mission, not the command, decides what happens at the edge: it accepts the move, ignores it from a scented square, or loses the robot. So adding a command is one class and one table entry, and a new movement command such as a `B` (back) gets the edge and scent rules for free.
 - **An extension point for planets, which the brief doesn't ask for.** `Mars` implements `IPlanet` (its upper-right square, how many squares it has, and whether a square is on it), and the mission, the map and the position reader take any planet. It is there to show extensibility. The map title and the console's messages still say Mars.
 - **Nothing else is layered.** The brief asks for "as simple as possible", so there are no repositories, services or dependency-injection setup in the core.
 - **stdout is exactly the brief's output.** Everything for a human reader goes to stderr, whether the input is typed or piped. Output can be compared byte for byte, and `2>/dev/null` gives the bare results without a command-line option.
-
-## Approach
-
-1. **Plan before code.** The open questions in the brief were charted as one GitHub issue, [the map](https://github.com/Sam-Archie/earth-to-mars/issues/1), with one child ticket per decision ([#2](https://github.com/Sam-Archie/earth-to-mars/issues/2)–[#8](https://github.com/Sam-Archie/earth-to-mars/issues/8)). Each ticket was settled in its own session and its reasoning is recorded on the ticket. Some decisions were reversed along the way, and the amendments are kept: an early plan failed the whole mission on bad input and stopped running robots at Mission complete, and both were dropped because the brief wants a result line for every robot.
-2. **One spec, then build tickets.** The closed map became [one spec](https://github.com/Sam-Archie/earth-to-mars/issues/9), split into build tickets [#10](https://github.com/Sam-Archie/earth-to-mars/issues/10)–[#16](https://github.com/Sam-Archie/earth-to-mars/issues/16). The first ticket got the brief's sample running end to end; each later one added one feature on top.
-3. **Test-first, small commits.** Each test was seen failing before the code that passes it. Expected values were worked out by hand from the brief, never computed by the code under test. Each commit holds one behaviour or one decision, and `dotnet test` passes on every commit. `git log` reads as the build story.
 
 ## Assumptions
 
@@ -161,24 +200,3 @@ The program keeps nothing between missions; ideas 1, 2 and 5 would change that.
 Described, not built: there is no Dockerfile or pipeline here, as the brief asks.
 
 Once missions are behind HTTP, the API would be published as a container image and run on any container host. Because each request is its own mission and nothing is shared, copies scale out behind a load balancer with no coordination, and logging would use the host's normal logging rather than a text file. Saved state (ideas 1, 2 and 5) would change that: every copy would need the same database, and concurrent requests on one Mars would need a rule for who wins.
-
-## How AI was used, and where it wasn't
-
-The work was planned and built with Claude Code, using [Matt Pocock's skills](https://github.com/mattpocock/skills), in this order:
-
-1. **`/wayfinder`** charted [the map](https://github.com/Sam-Archie/earth-to-mars/issues/1) of open decisions, one ticket per decision, using `grilling` and `domain-modeling` to settle each one and write the glossary.
-2. **`/to-spec`** turned the closed map into [the spec](https://github.com/Sam-Archie/earth-to-mars/issues/9).
-3. **`/to-tickets`** split the spec into build tickets. No code existed before this step.
-4. **`/implement`** built one ticket per session, test-first with `tdd`, with `code-review` to check the work against the standards and the spec.
-
-The skills are installed locally and not committed.
-
-**What Claude did:** proposed a recommended answer for every planning question, wrote the code and tests test-first, reviewed its own changes, and drafted this README.
-
-**What was done by hand:**
-
-- Every planning decision. Claude recommended; the human decided.
-- Test expected values, worked out from the brief rather than from the code.
-- Reviewing every change before it was committed, and editing this README.
-
-**The evidence** is the record itself, not a separate log: [the map](https://github.com/Sam-Archie/earth-to-mars/issues/1), its tickets ([#2](https://github.com/Sam-Archie/earth-to-mars/issues/2)–[#8](https://github.com/Sam-Archie/earth-to-mars/issues/8), then [#10](https://github.com/Sam-Archie/earth-to-mars/issues/10)–[#16](https://github.com/Sam-Archie/earth-to-mars/issues/16)), and [`git log`](https://github.com/Sam-Archie/earth-to-mars/commits/main), where every AI-assisted commit carries a `Co-Authored-By: Claude` trailer.
